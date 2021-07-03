@@ -10,14 +10,3 @@
           :roles #{:none}
           :password ""}
    :classboard #{}})
-
-(def default-db-dummy
-  {:auth true
-   :errors {}
-   :nav {:active-page :sign-in}
-   :user {:id "xxx"
-          :firstname "Eric"
-          :lastname "Lensher"
-          :roles #{:student}
-          :password "xyz"}
-   :classboard #{{:id "class1" :name "class with a name" :assignments []}}})

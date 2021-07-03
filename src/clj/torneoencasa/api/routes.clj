@@ -25,10 +25,10 @@
           [:lastname string?]
           [:roles [:set keyword?]]
           [:password string?]]]
-  [:classboard [:set [:map
-                      [:id string?]
-                      [:name string?]
-                      [:assignments vector?]]]]])
+  [:items [:set [:map
+                 [:id string?]
+                 [:name string?]
+                 [:events vector?]]]]])
 
 (defn auth-handler [{{{:keys [id password]} :body} :parameters}]
     (response/ok (db/retrieve id password)))

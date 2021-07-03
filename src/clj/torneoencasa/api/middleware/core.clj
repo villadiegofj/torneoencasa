@@ -1,6 +1,5 @@
 (ns torneoencasa.api.middleware.core
   (:require
-    [clojure.tools.logging :as log]
     [torneoencasa.api.middleware.formats :as formats]
     [muuntaja.middleware :as m]
     [ring.middleware.cors :as cors]
