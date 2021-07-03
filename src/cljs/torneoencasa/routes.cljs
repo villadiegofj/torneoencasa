@@ -4,7 +4,7 @@
 (def router
   (reitit/router
     [["/" ::home]
-     ["/classboard/:id" ::classboard]]))
+     ["/item/:id" ::items]]))
 
 (defn url-for [url & opts]
   (reitit/match-by-name router url opts))

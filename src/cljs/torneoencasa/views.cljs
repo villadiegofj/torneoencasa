@@ -5,24 +5,13 @@
    [torneoencasa.auth.subs :as auth-subs]
    [torneoencasa.auth.core :refer [sign-in sign-up]]
    [torneoencasa.nav.core :refer [nav]]
-   [torneoencasa.home.core :refer [home]]
-   [torneoencasa.mock.core :refer [tabs card panel box tiles media-object]]
-   [torneoencasa.classboard.core :refer [classboard]]
-   [torneoencasa.profile.core :refer [profile]]))
+   [torneoencasa.home.core :refer [home]]))
 
 (defn pages [page-name]
   (case page-name
     :home [home]
     :sign-in [sign-in]
     :sign-up [sign-up]
-    :classboard [classboard]
-    :profile [profile]
-    :tabs [tabs]
-    :card [card]
-    :panel [panel]
-    :box [box]
-    :tiles [tiles]
-    :media-object [media-object]
     [sign-in]))
 
 (defn errors-list [errors]
@@ -34,8 +23,8 @@
   [:section.hero.is-primary.is-bold.is-small
    [:div.hero-body
     [:div.container
-     [:h1.title "torneoencasa"]
-     [:h2.subtitle "Learn english"]]]])
+     [:h1.title "Torneo en Casa"]
+     [:h2.subtitle "Todos somos una pieza, y en este rompecabezas todas las piezas son importantes"]]]])
 
 (defn footer []
   [:footer

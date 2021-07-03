@@ -4,9 +4,7 @@
    [re-frame.core :as rf]
    [day8.re-frame.http-fx] ;; not used but causes :http-xhrio to self-register
    [ajax.core :as ajax]
-   [torneoencasa.events :as common-events]
-   [torneoencasa.nav.events :as nav-events]
-   [torneoencasa.db :as db]))
+   [torneoencasa.nav.events :as nav-events]))
 
 (def api-url "http://localhost:8080/api")
 

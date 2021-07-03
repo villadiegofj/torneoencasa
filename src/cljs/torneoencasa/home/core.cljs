@@ -51,7 +51,5 @@
   (let [user (rf/subscribe [::common-subs/user])
         active-page (rf/subscribe [::nav-subs/active-page])]
     [:div.columns
-     [:div.column.is-one-third
-      [panel]]
-     [:div.column.is-two-thirds
-      [text]]]))
+     [:div.column.is-two-third
+      [panel]]]))
