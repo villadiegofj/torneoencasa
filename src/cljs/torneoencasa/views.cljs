@@ -20,7 +20,7 @@
      ^{:key key} [:li (str (name key) " " val)])])
 
 (defn header []
-  [:section.hero.is-primary.is-bold.is-small
+  [:section.hero.is-info.is-bold.is-small
    [:div.hero-body
     [:div.container
      [:h1.title "Torneo en Casa"]
