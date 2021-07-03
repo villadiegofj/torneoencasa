@@ -10,7 +10,7 @@ you.
 * Architecture:
 [Single Page Application (SPA)](https://en.wikipedia.org/wiki/Single-page_application)
 * Languages
-  - Front end is [ClojureScript](https://clojurescript.org/) with ([re-frame](https://github.com/day8/re-frame))
+  - Front end ([re-frame](https://github.com/day8/re-frame)): [ClojureScript](https://clojurescript.org/) (CLJS)
 * Dependencies
   - UI framework: [re-frame](https://github.com/day8/re-frame)
   ([docs](https://github.com/day8/re-frame/blob/master/docs/README.md),
@@ -18,15 +18,17 @@ you.
   [Reagent](https://github.com/reagent-project/reagent) ->
   [React](https://github.com/facebook/react)
 * Build tools
-  - CLJS compilation, dependency management, REPL, & hot reload: [`shadow-cljs`](https://github.com/thheller/shadow-cljs)
+  - Project task & dependency management: [Leiningen](https://github.com/technomancy/leiningen)
+  - CLJS compilation, REPL, & hot reload: [`shadow-cljs`](https://github.com/thheller/shadow-cljs)
 * Development tools
-  - Debugging: [CLJS DevTools](https://github.com/binaryage/cljs-devtools)
+  - Debugging: [CLJS DevTools](https://github.com/binaryage/cljs-devtools),
+  [`re-frame-10x`](https://github.com/day8/re-frame-10x)
 
 #### Directory structure
 
 * [`/`](/../../): project config files
 * [`dev/`](dev/): source files compiled only with the [dev](#running-the-app) profile
-  - [`user.cljs`](dev/cljs/user.cljs): symbols for use during development in the
+  - [`cljs/user.cljs`](dev/cljs/user.cljs): symbols for use during development in the
 [ClojureScript REPL](#connecting-to-the-browser-repl-from-a-terminal)
 * [`resources/public/`](resources/public/): SPA root directory;
 [dev](#running-the-app) / [prod](#production) profile depends on the most recent build
@@ -38,11 +40,12 @@ you.
     - Customizable; add headers, footers, links to other scripts and styles, etc.
   - Generated directories and files
     - Created on build with either the [dev](#running-the-app) or [prod](#production) profile
+    - Deleted on `lein clean` (run by all `lein` aliases before building)
     - `js/compiled/`: compiled CLJS (`shadow-cljs`)
       - Not tracked in source control; see [`.gitignore`](.gitignore)
-* [`src/torneoencasa/`](src/torneoencasa/): SPA source files (ClojureScript,
+* [`src/cljs/torneoencasa/`](src/cljs/torneoencasa/): SPA source files (ClojureScript,
 [re-frame](https://github.com/Day8/re-frame))
-  - [`core.cljs`](src/torneoencasa/core.cljs): contains the SPA entry point, `init`
+  - [`core.cljs`](src/cljs/torneoencasa/core.cljs): contains the SPA entry point, `init`
 
 ### Editor/IDE
 
@@ -52,9 +55,15 @@ Use your preferred editor or IDE that supports Clojure/ClojureScript development
 ### Environment Setup
 
 1. Install [JDK 8 or later](https://openjdk.java.net/install/) (Java Development Kit)
-2. Install [Node.js](https://nodejs.org/) (JavaScript runtime environment) which should include
+2. Install [Leiningen](https://leiningen.org/#install) (Clojure/ClojureScript project task &
+dependency management)
+3. Install [Node.js](https://nodejs.org/) (JavaScript runtime environment) which should include
    [NPM](https://docs.npmjs.com/cli/npm) or if your Node.js installation does not include NPM also install it.
-5. Clone this repo and open a terminal in the `torneoencasa` project root directory
+7. Clone this repo and open a terminal in the `torneoencasa` project root directory
+8. (Optional) Download project dependencies:
+    ```sh
+    lein deps
+    ```
 
 ### Browser Setup
 
@@ -95,8 +104,7 @@ Start a temporary local web server, build the app with the `dev` profile, and se
 browser test runner and karma test runner with hot reload:
 
 ```sh
-npm install
-npx shadow-cljs watch app
+lein watch
 ```
 
 Please be patient; it may take over 20 seconds to see any output, and over 40 seconds to complete.
@@ -116,7 +124,7 @@ to which you may now connect.
 
 See
 [Shadow CLJS User's Guide: Editor Integration](https://shadow-cljs.github.io/docs/UsersGuide.html#_editor_integration).
-Note that `npm run watch` runs `npx shadow-cljs watch` for you, and that this project's running build ids is
+Note that `lein watch` runs `shadow-cljs watch` for you, and that this project's running build ids is
 `app`, `browser-test`, `karma-test`, or the keywords `:app`, `:browser-test`, `:karma-test` in a Clojure context.
 
 Alternatively, search the web for info on connecting to a `shadow-cljs` ClojureScript browser REPL
@@ -150,7 +158,7 @@ without needing to `require`.
 See a list of [`shadow-cljs CLI`](https://shadow-cljs.github.io/docs/UsersGuide.html#_command_line)
 actions:
 ```sh
-npx shadow-cljs --help
+lein run -m shadow.cljs.devtools.cli --help
 ```
 
 Please be patient; it may take over 10 seconds to see any output. Also note that some actions shown
@@ -158,7 +166,7 @@ may not actually be supported, outputting "Unknown action." when run.
 
 Run a shadow-cljs action on this project's build id (without the colon, just `app`):
 ```sh
-npx shadow-cljs <action> app
+lein run -m shadow.cljs.devtools.cli <action> app
 ```
 ### Debug Logging
 
@@ -180,11 +188,18 @@ Use `debug?` for logging or other tasks that should run only on `dev` builds:
 Build the app with the `prod` profile:
 
 ```sh
-npm install
-npm run release
+lein release
 ```
 
 Please be patient; it may take over 15 seconds to see any output, and over 30 seconds to complete.
 
 The `resources/public/js/compiled` directory is created, containing the compiled `app.js` and
 `manifest.edn` files.
+
+The [`resources/public`](resources/public/) directory contains the complete, production web front
+end of your app.
+
+Always inspect the `resources/public/js/compiled` directory prior to deploying the app. Running any
+`lein` alias in this project after `lein watch` will, at the very least, run `lein clean`, which
+deletes this generated directory. Further, running `lein watch` will generate many, much larger
+development versions of the files in this directory.

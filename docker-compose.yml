@@ -1,0 +1,56 @@
+# docker network create appsnet
+# docker volume create torneoencasa-elastic-vol
+# docker run -d --name torneoencasa-srv -p 29080:29080 oraqus/torneoencasa:0.1
+# docker run -d --name cache-srv -h redis-store-host -p 6379:6379 --network=appsnet redis:4.0.2-alpine
+# docker run -d --name storage-srv -h mongo-store-host -p 27017:27017 -v $HOME/dev/db/mongodb/data:/data/db --network=appsnet mongo:3.4.4
+
+version: '3'
+
+services:
+
+    torneoencasa-app:
+        build:
+            context: torneoencasa-ctx
+            dockerfile: Dockerfile
+        container_name: torneoencasa
+        image: oraqus/torneoencasa:0.1
+        ports:
+            - "29080:29080"
+        networks:
+            - appsnet
+        #depends_on:
+        #    - mongo-db-srv
+        #    - redis-cache-srv
+        environment:
+            JAVA_OPTS: "-Xmx1024m -Xms512m"
+
+    #redis-cache-srv:
+    #    container_name: redis-db
+    #    image: redis:4.0.2-alpine
+    #    ports:
+    #        - "6379:6379"
+    #    networks:
+    #        appsnet:
+    #            aliases:
+    #                - redis-store-host
+    #                - cache-srv
+
+    #mongo-db-srv:
+    #    container_name: mongo-db
+    #    image: mongo:3.4.4
+    #    ports:
+    #        - "27017:27017"
+    #    volumes:
+    #        - $HOME/dev/db/mongodb/data:/data/db
+    #    networks:
+    #        appsnet:
+    #            aliases:
+    #                - mongo-store-host
+    #                - storage-srv
+
+networks:
+    appsnet:
+
+volumes:
+  torneoencasa-elastic-vol:
+    driver: local

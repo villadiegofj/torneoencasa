@@ -1,0 +1,49 @@
+;roles :teacher :student :anonymous
+[{:auth true
+           :errors {}
+           :nav {:active-page :home}
+           :user {:id "bruce"
+                  :firstname "bruce"
+                  :lastname "wayne"
+                  :roles #{:teacher}
+                  :password "batman"}
+           :classboard #{{:id "SHDW" :name "in the shadows" :assignments []}}}
+ {:auth true
+           :errors {}
+           :nav {:active-page :home}
+           :user {:id "dick"
+                  :firstname "dick"
+                  :lastname "grayson"
+                  :roles #{:student}
+                  :password "robin"}
+           :classboard #{{:id "CRYPT" :name "code breaking 101" :assignments []}}}
+
+ {:auth true
+           :errors {}
+           :nav {:active-page :home}
+           :user {:id "jack"
+                  :firstname "jack"
+                  :lastname "napier"
+                  :roles #{:anonymous}
+                  :password "joker"}
+           :classboard #{{:id "TOYZ" :name "blow up stuff with a smile" :assignments []}}}
+
+ {:auth true
+           :errors {}
+           :nav {:active-page :home}
+           :user {:id "arthur"
+                  :firstname "arthur"
+                  :lastname "curry"
+                  :roles #{:anonymous}
+                  :password "aquaman"}
+           :classboard #{{:id "WTRR" :name "dolphin tricks" :assignments []}}}
+
+ {:auth false
+           :errors {:message "confused user"}
+           :nav {:active-page :home}
+           :user {:id "harvey"
+                  :firstname "harvey"
+                  :lastname "dent"
+                  :roles #{:teacher}
+                  :password "twoface"}
+           :classboard #{{:id "CNTS" :name "coin toss mastery" :assignments []}}}]
