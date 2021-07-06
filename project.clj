@@ -8,6 +8,8 @@
                  [com.cognitect/transit-clj "1.0.324"]
                  [day8.re-frame/http-fx "0.2.1"]
                  [day8.re-frame/tracing "0.6.0"]
+                 [environ "1.2.0"]
+                 [integrant "0.8.0"]
                  [metosin/malli "0.2.0"]
                  [metosin/muuntaja "0.6.7"]
                  [metosin/reitit "0.5.9"]
@@ -57,6 +59,9 @@
                        :uberjar-name   "torneoencasa.jar"
                        :resource-paths ["resources"]}
              :dev     {:dependencies [[binaryage/devtools "1.0.2"]
-                                      [day8.re-frame/re-frame-10x "0.7.0"]]
-                       :source-paths ["dev"]}
+                                      [day8.re-frame/re-frame-10x "0.7.0"]
+                                      [ring/ring-mock "0.4.0"]
+                                      [integrant/repl "0.3.2"]]
+                       :source-paths ["dev/clj" "dev/cljs"]
+                       :resource-paths ["dev/resources"]}
              :prod    {}})

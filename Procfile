@@ -1,1 +1,1 @@
-web: java -Dclojure.main.report=stderr -cp target/uberjar/torneoencasa.jar clojure.main -m torneoencasa.api.app
+web: java $JVM_OPTS -cp target/uberjar/torneoencasa.jar clojure.main -m torneoencasa.api.app "resources/config.edn"

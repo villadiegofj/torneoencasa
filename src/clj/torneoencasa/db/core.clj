@@ -9,7 +9,7 @@
 (s/def ::password string?)
 (s/def ::auth-request (s/keys :req-un [::id ::password]))
 
-(defn read-users [] (->> "dev/users.edn"
+(defn read-users [] (->> "dev/resources/users.edn"
      io/resource
      slurp
      edn/read-string))

@@ -37,7 +37,7 @@
   (-> (response/resource-response "index.html" {:root "public"})
       (response/content-type "text/html")))
 
-(defn api-routes []
+(def api-routes
   [["/" {:name ::home
         :get home-page}]
    ["/api"
@@ -49,8 +49,10 @@
 
 (def accepted-origin #".*")
 
-(def router-options
-  {:data {:muuntaja muuntaja/instance
+(defn router-options
+  [db-config]
+  {:data {:db db-config
+          :muuntaja muuntaja/instance
           :coercion rc-malli/coercion
           :middleware [rrm-params/parameters-middleware
                        rrm-muuntaja/format-negotiate-middleware
@@ -62,13 +64,26 @@
                        rrc/coerce-response-middleware]}
    :exception reitit.dev.pretty/exception})
 
-(def router
+(defn router [env]
     (rr/router
-      (api-routes) router-options))
+      api-routes (router-options env)))
 
-(def app-routes
-  (rr/ring-handler router
-                   (rr/routes (rr/create-resource-handler {:path "/"})
-                              (middleware/wrap-with-webjars "/webjars")
-                              (rr/create-default-handler))))
+(defn build-handler
+  [env]
+  (rr/ring-handler
+    (router env)
+    (rr/routes (rr/create-resource-handler {:path "/"})
+               (middleware/wrap-with-webjars "/webjars")
+               (rr/create-default-handler))))
 
+#_(defn routes
+  [env]
+  (ring/ring-handler
+    (ring/router
+      [swagger-docs
+       ["/api"
+        (math/routes env)
+        (strings/routes env)]]
+      router-config)
+    (ring/routes
+      (swagger-ui/create-swagger-ui-handler {:path "/"}))))
