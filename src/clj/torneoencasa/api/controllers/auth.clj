@@ -1,6 +1,8 @@
 (ns torneoencasa.api.controllers.auth
-  (:require [ring.util.http-response :as response]
-            [torneoencasa.db.core :as db])
+  (:require
+    [clojure.pprint :as p]
+    [ring.util.http-response :as response]
+    [torneoencasa.db.core :as db])
   (:gen-class))
 
 (def creds-schema
@@ -25,7 +27,9 @@
                   [:events vector?]]]]])
 
 (defn handler [reqs]
-  (println reqs))
+  (let [params (-> reqs :parameters :body)
+        db (-> reqs :reitit.core/match :data :db)]
+    (response/ok (db/get-user-by-id db params))))
 
 #_(defn handler [{{{:keys [id password]} :body} :parameters}]
   (response/ok (db/retrieve id password)))

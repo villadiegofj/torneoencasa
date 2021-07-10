@@ -1,17 +1,17 @@
-(ns clj.user
+(ns user
   (:require
-            [integrant.repl :as ig-repl]
-            [integrant.core :as ig]
-            [integrant.repl.state :as state]
-            [ring.util.http-response :as response]
-            [muuntaja.core :as m]
-            [malli.core :as malli]
-            [reitit.ring :as rr]
-            [reitit.ring.coercion :as rrc]
-            [reitit.ring.middleware.muuntaja :as rrmm]
-            [reitit.ring.middleware.parameters :as rrmp]
-            [reitit.coercion.malli :as rcm]
-            [ring.middleware.cors :as cors])
+    [integrant.repl :as ig-repl]
+    [integrant.core :as ig]
+    [integrant.repl.state :as state]
+    [ring.util.http-response :as response]
+    [muuntaja.core :as m]
+    [malli.core :as malli]
+    [reitit.ring :as rr]
+    [reitit.ring.coercion :as rrc]
+    [reitit.ring.middleware.muuntaja :as rrmm]
+    [reitit.ring.middleware.parameters :as rrmp]
+    [reitit.coercion.malli :as rcm]
+    [ring.middleware.cors :as cors])
   (:gen-class))
 
 (ig-repl/set-prep!
@@ -35,7 +35,7 @@
         :uri            "/swagger.json"})
   (app {:request-method :post
         :uri            "/api/auth"
-        :query-params {:id "batman"
+        :form-params {:id "batman"
                        :password "namtab"}})
   (defn wrap-with-cors
     [handler domain-pattern]

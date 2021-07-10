@@ -2,10 +2,12 @@
   (:require
     [environ.core :refer [env]]
     [integrant.core :as ig]
+    [next.jdbc :as jdbc]
     [reitit.ring :as ring]
     [ring.adapter.jetty :as jetty]
     [ring.util.response :refer [resource-response]]
-    [torneoencasa.api.routes :as routes])
+    [torneoencasa.api.routes :as routes]
+    [torneoencasa.db.core :as db])
   (:gen-class))
 
 (defn app
@@ -28,15 +30,12 @@
   (println "[*] started app: ")
   (app config))
 
-#_(defmethod ig/init-key :db/config [_ db-spec]
-  (let [conn (jdbc/get-datasource db-spec)]
-    (populate conn (:dbtype db-spec))
-    conn))
-
-(defmethod ig/init-key :db/config [_ db-spec]
+(defmethod ig/init-key :db/config
   [_ db-spec]
   (println "[*] db connection: " db-spec)
-  db-spec)
+  (let [conn (jdbc/get-datasource db-spec)]
+    (db/populate conn (:dbtype db-spec))
+    conn))
 
 (defmethod ig/halt-key! :server/http
   [_ jetty]
