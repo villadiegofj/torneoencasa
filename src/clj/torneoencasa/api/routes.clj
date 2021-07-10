@@ -1,8 +1,6 @@
 (ns torneoencasa.api.routes
   (:require [ring.util.http-response :as response]
             [muuntaja.core :as muuntaja]
-            [malli.core :as malli]
-            [reitit.core :as reitit]
             [reitit.dev.pretty]
             [reitit.ring :as rr]
             [reitit.ring.coercion :as rrc]
@@ -10,28 +8,10 @@
             [reitit.ring.middleware.parameters :as rrm-params]
             [reitit.coercion.malli :as rc-malli]
             [torneoencasa.db.core :as db]
+            [torneoencasa.api.controllers.auth :as auth]
             [torneoencasa.api.middleware.core :as middleware])
  (:gen-class))
 
-(def profile-schema
- [:map
-  [:auth boolean?]
-  [:errors {:optional true} map?]
-  [:nav [:map
-         [:active-page [:enum :login :home]]]]
-  [:user [:map
-          [:id string?]
-          [:firstname string?]
-          [:lastname string?]
-          [:roles [:set keyword?]]
-          [:password string?]]]
-  [:items [:set [:map
-                 [:id string?]
-                 [:name string?]
-                 [:events vector?]]]]])
-
-(defn auth-handler [{{{:keys [id password]} :body} :parameters}]
-    (response/ok (db/retrieve id password)))
 
 (defn home-page [request]
   (-> (response/resource-response "index.html" {:root "public"})
@@ -42,10 +22,9 @@
         :get home-page}]
    ["/api"
      ["/auth" {:name ::auth
-               :parameters {:body [:map [:id string?]
-                                        [:password string?]]}
-               :responses {200 {:body profile-schema}}
-               :post {:handler auth-handler}}]]])
+               :parameters {:body auth/creds-schema}
+               :responses {200 {:body auth/profile-schema}}
+               :post {:handler auth/handler}}]]])
 
 (def accepted-origin #".*")
 
@@ -75,15 +54,3 @@
     (rr/routes (rr/create-resource-handler {:path "/"})
                (middleware/wrap-with-webjars "/webjars")
                (rr/create-default-handler))))
-
-#_(defn routes
-  [env]
-  (ring/ring-handler
-    (ring/router
-      [swagger-docs
-       ["/api"
-        (math/routes env)
-        (strings/routes env)]]
-      router-config)
-    (ring/routes
-      (swagger-ui/create-swagger-ui-handler {:path "/"}))))
