@@ -1,12 +1,12 @@
 (ns torneoencasa.api.controllers.auth
   (:require
-    [clojure.pprint :as p]
     [ring.util.http-response :as response]
     [torneoencasa.db.core :as db])
   (:gen-class))
 
 (def creds-schema
-  [:map [:id string?]
+  [:map
+   [:username string?]
    [:password string?]])
 
 (def profile-schema
@@ -16,21 +16,34 @@
    [:nav [:map
           [:active-page [:enum :login :home]]]]
    [:user [:map
-           [:id string?]
+           [:id uuid?]
+           [:username string?]
            [:firstname string?]
            [:lastname string?]
-           [:roles [:set keyword?]]
-           [:password string?]]]
+           [:email string?]
+           [:password string?]
+           [:role string?]]]
    [:items [:set [:map
                   [:id string?]
                   [:name string?]
                   [:events vector?]]]]])
 
+(def clean-profile
+  {:auth  true
+   :errors {}
+   :nav   {:active-page :login}
+   :user  {:id        (java.util.UUID/randomUUID)
+           :username  ""
+           :firstname ""
+           :lastname  ""
+           :email     ""
+           :password  ""
+           :role      ""}
+   :items #{{:id "" :name "" :events []}}})
+
 (defn handler [reqs]
-  (let [params (-> reqs :parameters :body)
-        db (-> reqs :reitit.core/match :data :db)]
-    (response/ok (db/get-user-by-id db params))))
-
-#_(defn handler [{{{:keys [id password]} :body} :parameters}]
-  (response/ok (db/retrieve id password)))
-
+  (let [{:keys [username]} (-> reqs :parameters :body)
+        ds (-> reqs :reitit.core/match :data :db :datasource)
+        [user] (db/get-user-by-username ds username)]
+    (response/ok
+      (assoc-in clean-profile [:user] user))))

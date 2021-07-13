@@ -1,4 +1,4 @@
 {:server/http {:handler #ig/ref :torneoencasa/app
                :port 3000}
- :torneoencasa/app {:db #ig/ref :db/config}
- :db/config {:dbtype "h2" :dbname "torneoencasa"}}
+ :torneoencasa/app {:datasource #ig/ref :db/config}
+ :db/config {:dbtype "h2:mem" :dbname "torneoencasa"}}

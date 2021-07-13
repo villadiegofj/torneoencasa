@@ -5,6 +5,8 @@
                                r
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
+                 [buddy "2.0.0"]
+                 [clojure.java-time "0.3.2"]
                  [com.cognitect/transit-clj "1.0.324"]
                  [com.github.seancorfield/next.jdbc "1.2.674"]
                  [com.h2database/h2 "1.4.200"]

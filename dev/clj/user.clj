@@ -1,18 +1,23 @@
 (ns user
   (:require
+    [clojure.pprint :as pp]
     [integrant.repl :as ig-repl]
     [integrant.core :as ig]
     [integrant.repl.state :as state]
-    [ring.util.http-response :as response]
-    [muuntaja.core :as m]
+    [muuntaja.core :as muuntaja]
     [malli.core :as malli]
+    [reitit.core :as reitit]
     [reitit.ring :as rr]
     [reitit.ring.coercion :as rrc]
     [reitit.ring.middleware.muuntaja :as rrmm]
     [reitit.ring.middleware.parameters :as rrmp]
     [reitit.coercion.malli :as rcm]
-    [ring.middleware.cors :as cors])
-  (:gen-class))
+    [torneoencasa.api.routes :as tcr]
+    [next.jdbc :as jdbc]
+    [next.jdbc.result-set :as rs]
+    [next.jdbc.sql :as sql]
+    [torneoencasa.db.core :as tcdb])
+(:gen-class))
 
 (ig-repl/set-prep!
   ;;zero arg function returning ig config
@@ -23,7 +28,11 @@
 (def reset ig-repl/reset)
 (def reset-all ig-repl/reset-all)
 
-(defn app [] (-> state/system :torneoencasa/app))
+(defn app []
+  (-> state/system :torneoencasa/app))
+
+(defn db []
+  (-> state/system :db/config))
 
 (comment
   (go)
@@ -31,55 +40,23 @@
   (reset)
 
   ;;;;;;;;;;;;;;;;
-  (app {:request-method :get
-        :uri            "/swagger.json"})
-  (app {:request-method :post
-        :uri            "/api/auth"
-        :form-params {:id "batman"
-                       :password "namtab"}})
-  (defn wrap-with-cors
-    [handler domain-pattern]
-    (cors/wrap-cors handler
-                    :access-control-allow-origin domain-pattern
-                    :access-control-allow-headers #{:accept :content-type}
-                    :access-control-allow-methods #{:get :put :post :delete}))
+  (def ds-opts {:return-keys true
+                :builder-fn rs/as-unqualified-kebab-maps})
+  (def db-spec {:dbtype "h2:mem" :dbname "torneoencasa"})
+  (def ds (jdbc/with-options (jdbc/get-datasource db-spec) ds-opts))
 
-  (def routes [["/api" {:get  (constantly response)
-                        :post (constantly response)}]
-               ["/options" {:options (constantly response)}]
-               ["/any" (constantly response)]])
+  (def h (tcr/build-handler db-spec))
+  (def auth {:uri            "/api/auth"
+             :request-method :post
+             :body-params    {:username "batman"
+                              :password "namtab"}})
+  (->> (h auth) muuntaja/decode-response-body)
 
-  (def router-options
-    {:data {:muuntaja muuntaja/instance
-            :coercion rc-malli/coercion
-            :middleware [rrmp/parameters-middleware
-                         rrmm/format-negotiate-middleware
-                         rrmm/format-response-middleware
-                         rrmm/format-request-middleware
-                         [middleware/wrap-with-cors accepted-origin]
-                         rrc/coerce-request-middleware
-                         rrc/coerce-exceptions-middleware
-                         rrc/coerce-response-middleware]}
-     :exception reitit.dev.pretty/exception})
+  (require '[malli.core :as malli])
+  (malli/validate [:map [:message string?]] {:message "hello"})
 
-  (def handler (rr/ring-handler
-                 (rr/router
-                   routes
-                   router-options)))
+  (def match (r/match-by-path (api-router dbspec) "/api/auth"))
 
-  (= {:status 200
-      :body ""
-      :headers {"Allow" "GET,POST,OPTIONS"}}
-     (handler {:request-method :options
-               :uri "/api"}))
-  (= response (handler {:request-method :get, :uri "/any"}))
-  (= response (handler {:request-method :options, :uri "/any"}))
-  (= response (handler {:request-method :options, :uri "/options"}))
-
-  (def preflight {:uri            "/api"
-                  :request-method :options
-                  :headers        {"origin"                         "http://localhost:8280"
-                                   "access-control-request-method"  "POST"
-                                   "access-control-request-headers" "Accept, Content-Type"}})
-  (handler preflight)
+  (rc/compile-request-coercers)
+  (rc/coerce! match)
   ,)
