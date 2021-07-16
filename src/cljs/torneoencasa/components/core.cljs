@@ -4,13 +4,12 @@
   [:div.field
    [:label.label (str label ":")
     [:div.control.has-icons-left
-     [:input.input attrs]
+     [:input.input.is-small attrs]
      [:span.icon.is-small.is-left
       [:i.fas {:class icon}]]]]])
 
 (defn button [label attrs]
-   [:div.control
-    [:button.button.is-link attrs label]])
+    [:button.button.is-link.is-small.is-fullwidth attrs label])
 
 (defn nav-item
   [{:keys [id href name dispatch]} active-page]

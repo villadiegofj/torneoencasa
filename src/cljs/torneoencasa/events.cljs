@@ -10,18 +10,17 @@
    :user {:id ""
           :firstname ""
           :lastname ""
-          :roles #{:anonymous}
+          :roles #{:visitor}
           :password ""}
    :items #{}})
 
 (rf/reg-event-db
  ::initialize-db
- (fn [db _]
+ (fn [_ _]:w
    default-db))
 
 (rf/reg-event-fx
  ::printlog
  (fn [coeffects event]
-   (let [data (second event)
-         db (:db coeffects)]
+   (let [db (:db coeffects)]
      {:db db})))

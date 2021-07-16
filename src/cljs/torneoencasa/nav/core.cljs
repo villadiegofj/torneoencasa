@@ -8,23 +8,18 @@
   [{:id :home
     :name "Home"
     :href "#home"
-    :authorized #{:teacher :student}
+    :authorized #{:admin :participant :invited}
     :dispatch #(rf/dispatch [::nav-events/set-active-nav :home])}
-   {:id :sign-in
+   #_{:id :sign-in
     :name "Sign in"
     :href "#sign-in"
-    :authorized #{:anonymous}
+    :authorized #{:admin :participant :invited :visitor}
     :dispatch #(rf/dispatch [::nav-events/set-active-nav :sign-in])}
-   {:id :sign-up
+   #_{:id :sign-up
     :name "Sign up"
     :href "#sign-up"
-    :authorized #{:anonymous}
-    :dispatch #(rf/dispatch [::nav-events/set-active-nav :sign-up])}
-   {:id :panel
-    :name "Panel"
-    :href "#panel"
-    :authorized #{:teacher}
-    :dispatch #(rf/dispatch [::nav-events/set-active-nav :panel])}])
+    :authorized #{:admin :participant :invited :visitor}
+    :dispatch #(rf/dispatch [::nav-events/set-active-nav :sign-up])}])
 
 (defn nav [active-page user]
   (let [user-roles (:roles user)

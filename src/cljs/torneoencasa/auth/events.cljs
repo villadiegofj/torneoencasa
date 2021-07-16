@@ -16,16 +16,24 @@
 (rf/reg-event-fx
  ::sign-up
  ;;[cofx event]
- (fn [{:keys [db]} [_ {:keys [id firstname lastname password roles]}]]
-   {:db (-> db
-     (assoc :auth true)
-     (assoc-in [:nav :active-page] :home)
-     (assoc-in [:user :id] id)
-     (assoc-in [:user :firstname] firstname)
-     (assoc-in [:user :lastname] lastname)
-     (assoc-in [:user :password] password)
-     (assoc-in [:user :roles] roles)
-     (update-in [:errors] dissoc :message))}))
+ (fn [{:keys [db]} [_ user]]
+     {:db (-> db
+              (assoc :auth false)
+              (assoc-in [:user] user)
+              (assoc-in [:nav :active-page] :sign-in)
+              (update-in [:errors] dissoc :message))
+     :http-xhrio {:method          :post
+                  :uri             (endpoint "users")
+                  :params          user
+                  :format          (ajax/json-request-format)
+                  :response-format (ajax/json-response-format {:keywords? true})
+                  :on-success      [::api-sign-up-success]
+                  :on-failure      [::api-request-error :sign-up]}}))
+
+(rf/reg-event-db
+  ::api-request-error
+  (fn [db [_ result]]
+    (assoc-in db [:errors :message] result)))
 
 (rf/reg-event-fx
   ::api-sign-in-success
@@ -33,10 +41,11 @@
     {:db         result
      :dispatch-n [[::nav-events/set-active-nav :home]]}))
 
-(rf/reg-event-db
-  ::api-request-error
-  (fn [db [_ result]]
-    (assoc-in db [:errors :message] result)))
+(rf/reg-event-fx
+  ::api-sign-up-success
+  (fn [{:keys [db]} [_ result]]
+    {:db         result
+     :dispatch-n [[::nav-events/set-active-nav :sign-in]]}))
 
 (rf/reg-event-fx
  ::sign-in
@@ -47,7 +56,7 @@
             (update-in [:errors] dissoc :message))
     :http-xhrio {:method          :post
                  :uri             (endpoint "auth")
-                 :params          {:id (:id data)
+                 :params          {:username (:username data)
                                    :password (:password data)}
                  :format          (ajax/json-request-format)
                  :response-format (ajax/json-response-format {:keywords? true})

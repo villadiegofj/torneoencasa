@@ -30,7 +30,7 @@
   [:footer
    [:div.container
     [:div.notification.has-text-centered
-    [:p [:a {:href "http://oraqus.cl"} "Made by Oraqus"]]]]])
+    [:p [:a {:href "http://www.oraqus.cl"} "Made by Oraqus"]]]]])
 
 (defn main-panel []
   (let [active-page (rf/subscribe [::nav-subs/active-page])
@@ -39,4 +39,4 @@
      [header]
      [nav @active-page @user]
      [pages @active-page]
-     [footer]]))
+     #_[footer]]))

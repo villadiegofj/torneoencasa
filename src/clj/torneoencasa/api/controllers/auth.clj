@@ -14,13 +14,14 @@
    [:auth boolean?]
    [:errors {:optional true} map?]
    [:nav [:map
-          [:active-page [:enum :login :home]]]]
+          [:active-page [:enum :sign-in :home]]]]
    [:user [:map
            [:id uuid?]
            [:username string?]
            [:firstname string?]
            [:lastname string?]
            [:email string?]
+           [:code string?]
            [:password string?]
            [:role string?]]]
    [:items [:set [:map
@@ -31,12 +32,13 @@
 (def clean-profile
   {:auth  true
    :errors {}
-   :nav   {:active-page :login}
+   :nav   {:active-page :sign-in}
    :user  {:id        (java.util.UUID/randomUUID)
-           :username  ""
            :firstname ""
            :lastname  ""
            :email     ""
+           :code      ""
+           :username  ""
            :password  ""
            :role      ""}
    :items #{{:id "" :name "" :events []}}})

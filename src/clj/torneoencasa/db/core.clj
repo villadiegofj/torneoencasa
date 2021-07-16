@@ -8,7 +8,7 @@
     [next.jdbc.sql :as sql])
   (:gen-class))
 
-(s/def ::roles #{:admin :regular :anonymous})
+(s/def ::roles #{:admin :participant :invited :visitor})
 (s/def ::id string?)
 (s/def ::password string?)
 (s/def ::auth-request (s/keys :req-un [::id ::password]))
@@ -20,41 +20,38 @@
   "List of roles."
   [{:id 1 :name "admin"       :created (t/instant)}
    {:id 2 :name "participant" :created (t/instant)}
-   {:id 3 :name "invited"     :created (t/instant)}])
+   {:id 3 :name "invited"     :created (t/instant)}
+   {:id 4 :name "visitor"     :created (t/instant)}])
 
 (def ^:private initial-user-data
   "Seed the database with this data."
   [{:id "ec3e9528-a0b8-4d6c-865a-44c9d376c001"
-    :username "batman"
     :firstname "Bruce"
     :lastname "Banner"
     :email "bruce@wayne.com"
+    :code "GTHM"
+    :username "batman"
     :password (buddy-hashers/encrypt "batman")
-    :role_id 1
+    :role "admin"
     :created (t/instant)}
    {:id "ec3e9528-a0b8-4d6c-865a-44c9d376c002"
-    :username "joker"
     :firstname "Jack"
     :lastname "Napier"
     :email "joker@gotham.com"
+    :code "JKR"
+    :username "joker"
     :password (buddy-hashers/encrypt "joker")
-    :role_id 2
+    :role "participant"
     :created (t/instant)}
    {:id "ec3e9528-a0b8-4d6c-865a-44c9d376c003"
-    :username "penguin"
     :firstname "Oscar"
     :lastname "Cobblepot"
     :email "penguin@gotham.com"
+    :code ""
+    :username "penguin"
     :password (buddy-hashers/encrypt "penguin")
-    :role_id 3
+    :role "invited"
     :created (t/instant)}])
-
-(def ^:private user-roles
-  "List of roles by user."
-  [{:user_id 1 :role_id 1 :created (t/instant)}
-   {:user_id 2 :role_id 2 :created (t/instant)}
-   {:user_id 3 :role_id 2 :created (t/instant)}
-   {:user_id 3 :role_id 3 :created (t/instant)}])
 
 (defn populate
   "Called at application startup. Attempts to create the
@@ -63,10 +60,22 @@
   [db]
   (let [auto-key "auto_increment primary key"]
     (try
-      (jdbc/execute-one! db [(str "create table roles (
-                                     id            integer " auto-key ",
-                                     name          varchar(32),
-                                     created    timestamp)")])
+      ;;(jdbc/execute-one! db [(str "create table roles (
+      ;;                               id            integer " auto-key ",
+      ;;                               name          varchar(32),
+      ;;                               created    timestamp)")])
+      ;;(jdbc/execute-one! db [(str "create table users (
+      ;;                               id           UUID,
+      ;;                               username     varchar(32),
+      ;;                               firstname    varchar(32),
+      ;;                               lastname     varchar(32),
+      ;;                               email        varchar(64),
+      ;;                               password     varchar(128),
+      ;;                               code         varchar(32),
+      ;;                               role_id      integer,
+      ;;                               created      timestamp,
+      ;;                               constraint fk_roles
+      ;;                                 foreign key (role_id) references roles(id))")])
       (jdbc/execute-one! db [(str "create table users (
                                      id           UUID,
                                      username     varchar(32),
@@ -74,17 +83,16 @@
                                      lastname     varchar(32),
                                      email        varchar(64),
                                      password     varchar(128),
-                                     role_id      integer,
-                                     created      timestamp,
-                                     constraint fk_roles
-                                       foreign key (role_id) references roles(id))")])
-      (println "Created users, roles and user_roles table!")
+                                     code         varchar(32),
+                                     role         varchar(32),
+                                     created      timestamp)")])
+      (println "Created users tables!")
       ;; if table creation was successful, it didn't exist before
       ;; so populate it...
       (try
-        (doseq [r roles]
-          (sql/insert! db :roles r))
-        (println "inserted roles!")
+        ;(doseq [r roles]
+        ;  (sql/insert! db :roles r))
+        ;(println "inserted roles!")
         (doseq [row initial-user-data]
           (sql/insert! db :users row))
         (println "inserted users!")
@@ -105,10 +113,9 @@
                          u.lastname,
                          u.email,
                          u.password,
-                         r.name role,
-                  from users u
-                  left outer join roles r
-                    on u.role_id = r.id"]))
+                         u.code,
+                         u.role
+                  from users u"]))
 
 (defn get-user-by-id
   "Given a user id, return the user record."
@@ -124,13 +131,13 @@
                          u.lastname,
                          u.email,
                          u.password,
-                         r.name role,
+                         u.code,
+                         u.role
                   from users u
-                  left outer join roles r
-                    on u.role_id = r.id
                   where u.username = ?" username]))
 
 (defn save-user
   "Save a user record."
   [db user]
+  (println "user:" user)
   (sql/insert! db :users user))

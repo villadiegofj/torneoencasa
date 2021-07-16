@@ -44,6 +44,7 @@
                 :builder-fn rs/as-unqualified-kebab-maps})
   (def db-spec {:dbtype "h2:mem" :dbname "torneoencasa"})
   (def ds (jdbc/with-options (jdbc/get-datasource db-spec) ds-opts))
+  (tcdb/get-users ds)
 
   (def h (tcr/build-handler db-spec))
   (def auth {:uri            "/api/auth"

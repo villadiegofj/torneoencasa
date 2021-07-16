@@ -23,11 +23,14 @@
    ["/api"
     ["/auth" {:name ::auth
               :post {:parameters {:body auth/creds-schema}
-                     :responses  {200 {:body auth/profile-schema}}
-                     :handler    auth/handler}}]
-    ["/users" {:name      ::users
-               :responses {200 {:body users/users-schema}}
-               :get       {:handler users/handler}}]]])
+                     :handler    auth/handler
+                     :responses  {200 {:body auth/profile-schema}}}}]
+    ["/users" {:name ::users
+               :get  {:handler   users/handler
+                      :responses {200 {:body users/users-schema}}}
+               :post {:parameters {:body users/user-schema}
+                      :handler    users/add
+                      :responses  {201 {:body    [:map [:id uuid?]]}}}}]]])
 
 (def accepted-origin #".*")
 
