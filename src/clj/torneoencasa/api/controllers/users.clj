@@ -4,6 +4,8 @@
     [java-time :as t]
     [ring.util.http-response :as response]
     [torneoencasa.db.core :as db])
+  (:import
+    [java.util UUID])
   (:gen-class))
 
 (def user-schema
@@ -27,17 +29,18 @@
          [:password string?]
          [:role string?]]])
 
-(defn handler [reqs]
-  (let [db (-> reqs :reitit.core/match :data :db :datasource)]
+(def endpoint "/api/users/")
+
+(defn fetch-all [db]
+  (fn [_]
     (response/ok (into #{} (db/get-users db)))))
 
-(defn add [reqs]
-  (let [data (-> reqs :parameters :body)
-        db (-> reqs :reitit.core/match :data :db :datasource)
-        id (java.util.UUID/randomUUID)
-        encrypted (-> data :password (buddy-hashers/encrypt))
-        user (-> data
-                 (assoc :id id :password encrypted :created (t/instant)))
-        _ (db/save-user db user)]
-    (println "encrypted:" encrypted "user" user)
-    (response/created (str "/api/users/" id) {:id id})))
+(defn add! [db]
+  (fn [request]
+    (let [data (-> request :parameters :body)
+          id (UUID/randomUUID)
+          encrypted (-> data :password (buddy-hashers/encrypt))
+          user (-> data
+                   (assoc :id id :password encrypted :created (t/instant)))
+          _ (db/save-user db user)]
+      (response/created (str endpoint id) {:id id}))))

@@ -26,14 +26,15 @@
 
 (defmethod ig/init-key :torneoencasa/app
   [_ ds]
-  (println "[*] started app: ")
-  (routes/build-handler ds))
+  (println "[*] started app")
+  (routes/handler ds))
 
 (defmethod ig/init-key :db/config
   [_ db-spec]
-  (println "[*] db connection: " db-spec)
-  (let [opts db/ds-opts
-        ds (jdbc/with-options (jdbc/get-datasource db-spec) opts)]
+  (println "[*] db connection")
+  (let [ds (-> db-spec
+               (jdbc/get-datasource)
+               (jdbc/with-options db/ds-opts))]
     (db/populate ds)
     ds))
 

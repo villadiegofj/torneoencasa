@@ -40,17 +40,17 @@
   (reset)
 
   ;;;;;;;;;;;;;;;;
-  (def ds-opts {:return-keys true
-                :builder-fn rs/as-unqualified-kebab-maps})
   (def db-spec {:dbtype "h2:mem" :dbname "torneoencasa"})
-  (def ds (jdbc/with-options (jdbc/get-datasource db-spec) ds-opts))
+  (def ds (jdbc/with-options (jdbc/get-datasource db-spec) tcdb/ds-opts))
   (tcdb/get-users ds)
+  (tcdb/get-user-by-username ds "batman")
 
-  (def h (tcr/build-handler db-spec))
+  (def h (tcr/build-handler ds))
   (def auth {:uri            "/api/auth"
              :request-method :post
              :body-params    {:username "batman"
                               :password "namtab"}})
+  (h auth)
   (->> (h auth) muuntaja/decode-response-body)
 
   (require '[malli.core :as malli])

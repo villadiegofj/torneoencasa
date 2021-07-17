@@ -2,6 +2,8 @@
   (:require
     [ring.util.http-response :as response]
     [torneoencasa.db.core :as db])
+  (:import
+    [java.util UUID])
   (:gen-class))
 
 (def creds-schema
@@ -33,7 +35,7 @@
   {:auth  true
    :errors {}
    :nav   {:active-page :sign-in}
-   :user  {:id        (java.util.UUID/randomUUID)
+   :user  {:id        (UUID/randomUUID)
            :firstname ""
            :lastname  ""
            :email     ""
@@ -43,9 +45,9 @@
            :role      ""}
    :items #{{:id "" :name "" :events []}}})
 
-(defn handler [reqs]
-  (let [{:keys [username]} (-> reqs :parameters :body)
-        ds (-> reqs :reitit.core/match :data :db :datasource)
-        [user] (db/get-user-by-username ds username)]
-    (response/ok
-      (assoc-in clean-profile [:user] user))))
+(defn check-credentials [db]
+  (fn [request]
+    (let [{:keys [username]} (-> request :parameters :body)
+          [user] (db/get-user-by-username db username)]
+      (response/ok
+        (assoc-in clean-profile [:user] user)))))

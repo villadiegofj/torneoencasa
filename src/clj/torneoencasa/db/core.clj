@@ -9,9 +9,9 @@
   (:gen-class))
 
 (s/def ::roles #{:admin :participant :invited :visitor})
-(s/def ::id string?)
+(s/def ::username string?)
 (s/def ::password string?)
-(s/def ::auth-request (s/keys :req-un [::id ::password]))
+(s/def ::auth-request (s/keys :req-un [::username ::password]))
 
 (def ds-opts {:return-keys true
               :builder-fn rs/as-unqualified-kebab-maps})
@@ -105,17 +105,9 @@
         (println "Looks like the database is already setup")))))
 
 (defn get-users
-  "Return all available users, sorted by name."
+  "Return all available users."
   [db]
-  (sql/query db ["select u.id,
-                         u.username,
-                         u.firstname,
-                         u.lastname,
-                         u.email,
-                         u.password,
-                         u.code,
-                         u.role
-                  from users u"]))
+  (sql/find-by-keys db :users :all))
 
 (defn get-user-by-id
   "Given a user id, return the user record."
@@ -125,19 +117,9 @@
 (defn get-user-by-username
   "Given a username, return the user record."
   [db username]
-  (sql/query db ["select u.id,
-                         u.username,
-                         u.firstname,
-                         u.lastname,
-                         u.email,
-                         u.password,
-                         u.code,
-                         u.role
-                  from users u
-                  where u.username = ?" username]))
+  (sql/find-by-keys db :users {:username username}))
 
 (defn save-user
   "Save a user record."
   [db user]
-  (println "user:" user)
   (sql/insert! db :users user))
