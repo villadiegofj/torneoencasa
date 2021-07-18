@@ -1,7 +1,7 @@
 (ns torneoencasa.api.controllers.auth
   (:require
     [ring.util.http-response :as response]
-    [torneoencasa.db.core :as db])
+    [torneoencasa.api.db.users :as users-model])
   (:import
     [java.util UUID])
   (:gen-class))
@@ -48,6 +48,6 @@
 (defn check-credentials [db]
   (fn [request]
     (let [{:keys [username]} (-> request :parameters :body)
-          [user] (db/get-user-by-username db username)]
+          [user] (users-model/get-user-by-username db username)]
       (response/ok
         (assoc-in clean-profile [:user] user)))))

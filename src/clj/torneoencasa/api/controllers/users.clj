@@ -3,7 +3,7 @@
     [buddy.hashers :as buddy-hashers]
     [java-time :as t]
     [ring.util.http-response :as response]
-    [torneoencasa.db.core :as db])
+    [torneoencasa.api.db.users :as users-model])
   (:import
     [java.util UUID])
   (:gen-class))
@@ -33,7 +33,7 @@
 
 (defn fetch-all [db]
   (fn [_]
-    (response/ok (into #{} (db/get-users db)))))
+    (response/ok (into #{} (users-model/get-users db)))))
 
 (defn add! [db]
   (fn [request]
@@ -42,5 +42,5 @@
           encrypted (-> data :password (buddy-hashers/encrypt))
           user (-> data
                    (assoc :id id :password encrypted :created (t/instant)))
-          _ (db/save-user db user)]
+          _ (users-model/save-user db user)]
       (response/created (str endpoint id) {:id id}))))

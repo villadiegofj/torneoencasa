@@ -16,7 +16,7 @@
     [next.jdbc :as jdbc]
     [next.jdbc.result-set :as rs]
     [next.jdbc.sql :as sql]
-    [torneoencasa.db.core :as tcdb])
+    [torneoencasa.api.db.users :as tcdb])
 (:gen-class))
 
 (ig-repl/set-prep!

@@ -1,4 +1,4 @@
-(ns torneoencasa.db.core
+(ns torneoencasa.api.db.users
   (:require
     [buddy.hashers :as buddy-hashers]
     [clojure.spec.alpha :as s]

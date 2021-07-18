@@ -6,7 +6,7 @@
     [ring.adapter.jetty :as jetty]
     [ring.util.response :refer [resource-response]]
     [torneoencasa.api.routes :as routes]
-    [torneoencasa.db.core :as db])
+    [torneoencasa.api.db.users :as users-model])
   (:gen-class))
 
 (defmethod ig/prep-key :server/http
@@ -34,8 +34,8 @@
   (println "[*] db connection")
   (let [ds (-> db-spec
                (jdbc/get-datasource)
-               (jdbc/with-options db/ds-opts))]
-    (db/populate ds)
+               (jdbc/with-options users-model/ds-opts))]
+    (users-model/populate ds)
     ds))
 
 (defn -main
