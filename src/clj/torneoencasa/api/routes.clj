@@ -17,6 +17,11 @@
   (-> (response/resource-response "index.html" {:root "public"})
       (response/content-type "text/html")))
 
+(def error-schema
+  [:map
+   [:error int?]
+   [:message string?]])
+
 (def api-routes
   [["/" {:name ::home
          :get  home-page}]
@@ -24,7 +29,9 @@
     ["/auth" {:name ::auth
               :post {:handler    auth/check-credentials
                      :parameters {:body auth/creds-schema}
-                     :responses  {200 {:body auth/profile-schema}}}}]
+                     :responses  {200 {:body auth/profile-schema}
+                                  401 {:body error-schema}
+                                  404 {:body error-schema}}}}]
     ["/users" {:name ::users
                :get  {:handler   users/fetch-all
                       :responses {200 {:body users/users-schema}}}
@@ -60,4 +67,5 @@
     (rr/routes (rr/create-resource-handler {:path "/"})
                (middleware/wrap-with-webjars "/webjars")
                (rr/redirect-trailing-slash-handler {:method :strip})
-               (rr/create-default-handler))))
+               (rr/create-default-handler
+                 {:not-found (constantly {:status 404 :body {:error 404 :message "resource not found"}})}))))

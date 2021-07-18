@@ -5,6 +5,7 @@
     [integrant.core :as ig]
     [integrant.repl.state :as state]
     [muuntaja.core :as muuntaja]
+    [buddy.hashers :as buddy-hashers]
     [malli.core :as malli]
     [reitit.core :as reitit]
     [reitit.ring :as rr]
@@ -13,10 +14,12 @@
     [reitit.ring.middleware.parameters :as rrmp]
     [reitit.coercion.malli :as rcm]
     [torneoencasa.api.routes :as tcr]
+    [torneoencasa.api.controllers.auth :as auth]
     [next.jdbc :as jdbc]
     [next.jdbc.result-set :as rs]
     [next.jdbc.sql :as sql]
-    [torneoencasa.api.db.users :as tcdb])
+    [torneoencasa.api.db.users :as tcdb]
+    [buddy.hashers :as buddy-hashers])
 (:gen-class))
 
 (ig-repl/set-prep!
@@ -43,9 +46,13 @@
   (def db-spec {:dbtype "h2:mem" :dbname "torneoencasa"})
   (def ds (jdbc/with-options (jdbc/get-datasource db-spec) tcdb/ds-opts))
   (tcdb/get-users ds)
+  (tcdb/get-user-by-username ds "barran")
   (tcdb/get-user-by-username ds "batman")
 
-  (def h (tcr/build-handler ds))
+  (let [[user] tcdb/get-user-by-username ds "batman"]
+    (if user "found" "nope"))
+
+  (def h (tcr/handler {:datasource ds}))
   (def auth {:uri            "/api/auth"
              :request-method :post
              :body-params    {:username "batman"
@@ -53,6 +60,12 @@
   (h auth)
   (->> (h auth) muuntaja/decode-response-body)
 
+  (def ttt {:uri            "/api/auth"
+            :db             ds
+            :request-method :post
+            :parameters     {:body {:username "batman" :password "batmann"}}})
+
+  (auth/check-credentials ttt)
   (require '[malli.core :as malli])
   (malli/validate [:map [:message string?]] {:message "hello"})
 

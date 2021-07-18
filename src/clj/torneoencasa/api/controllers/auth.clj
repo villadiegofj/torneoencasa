@@ -1,5 +1,6 @@
 (ns torneoencasa.api.controllers.auth
   (:require
+    [buddy.hashers :as buddy-hashers]
     [ring.util.http-response :as response]
     [torneoencasa.api.db.users :as users-model])
   (:import
@@ -46,8 +47,15 @@
    :items #{{:id "" :name "" :events []}}})
 
 (defn check-credentials [request]
-    (let [db (:db request)
-          {:keys [username]} (-> request :parameters :body)
-          [user] (users-model/get-user-by-username db username)]
-      (response/ok
-        (assoc-in clean-profile [:user] user))))
+  (let [db (:db request)
+        {:keys [username password]} (-> request :parameters :body)
+        record (users-model/get-user-by-username db username)]
+    (if-not (seq record)
+      (response/not-found {:error   404
+                           :message (str "not found:" username)})
+      (let [[user] record
+            authorized? (buddy-hashers/check password (:password user))]
+        (if authorized?
+          (response/ok (assoc-in clean-profile [:user] user))
+          (response/unauthorized {:error   401
+                                  :message (str "unauthorized access for:" username)}))))))
