@@ -20,3 +20,9 @@
   ([handler prefix]
    (webjars/wrap-webjars handler prefix)))
 
+(def wrap-db
+  {:name ::db
+   :compile (fn [{:keys [db]} _]
+              (fn [handler]
+                (fn [req]
+                  (handler (assoc req :db (:datasource db))))))})

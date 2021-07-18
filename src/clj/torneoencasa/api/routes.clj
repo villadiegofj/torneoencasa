@@ -17,26 +17,26 @@
   (-> (response/resource-response "index.html" {:root "public"})
       (response/content-type "text/html")))
 
-(defn api-routes [ds]
-  (let [db (:datasource ds)]
-    [["/" {:name ::home
-           :get  home-page}]
-     ["/api"
-      ["/auth" {:name ::auth
-                :post {:handler    (auth/check-credentials db)
-                       :parameters {:body auth/creds-schema}
-                       :responses  {200 {:body auth/profile-schema}}}}]
-      ["/users" {:name ::users
-                 :get  {:handler   (users/fetch-all db)
-                        :responses {200 {:body users/users-schema}}}
-                 :post {:handler    (users/add! db)
-                        :parameters {:body users/user-schema}
-                        :responses  {201 {:body [:map [:id uuid?]]}}}}]]]))
+(def api-routes
+  [["/" {:name ::home
+         :get  home-page}]
+   ["/api"
+    ["/auth" {:name ::auth
+              :post {:handler    auth/check-credentials
+                     :parameters {:body auth/creds-schema}
+                     :responses  {200 {:body auth/profile-schema}}}}]
+    ["/users" {:name ::users
+               :get  {:handler   users/fetch-all
+                      :responses {200 {:body users/users-schema}}}
+               :post {:handler    users/add!
+                      :parameters {:body users/user-schema}
+                      :responses  {201 {:body [:map [:id uuid?]]}}}}]]])
 
 (def accepted-origin #".*")
 
-(def router-options
-  {:data {:muuntaja muuntaja/instance
+(defn router-options [ds]
+  {:data {:db ds
+          :muuntaja muuntaja/instance
           :coercion rc-malli/coercion
           :middleware [rrm-params/parameters-middleware
                        rrm-muuntaja/format-negotiate-middleware
@@ -45,12 +45,13 @@
                        [middleware/wrap-with-cors accepted-origin]
                        rrc/coerce-request-middleware
                        rrc/coerce-exceptions-middleware
-                       rrc/coerce-response-middleware]}
+                       rrc/coerce-response-middleware
+                       middleware/wrap-db]}
    :exception reitit.dev.pretty/exception})
 
 (defn api-router [ds]
   (rr/router
-    (api-routes ds) router-options))
+    api-routes (router-options ds)))
 
 (defn handler
   [ds]

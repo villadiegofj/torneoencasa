@@ -31,16 +31,16 @@
 
 (def endpoint "/api/users/")
 
-(defn fetch-all [db]
-  (fn [_]
+(defn fetch-all [request]
+  (let [db (:db request)]
     (response/ok (into #{} (users-model/get-users db)))))
 
-(defn add! [db]
-  (fn [request]
-    (let [data (-> request :parameters :body)
+(defn add! [request]
+    (let [db (:db request)
+          data (-> request :parameters :body)
           id (UUID/randomUUID)
           encrypted (-> data :password (buddy-hashers/encrypt))
           user (-> data
                    (assoc :id id :password encrypted :created (t/instant)))
           _ (users-model/save-user db user)]
-      (response/created (str endpoint id) {:id id}))))
+      (response/created (str endpoint id) {:id id})))

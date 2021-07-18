@@ -45,9 +45,9 @@
            :role      ""}
    :items #{{:id "" :name "" :events []}}})
 
-(defn check-credentials [db]
-  (fn [request]
-    (let [{:keys [username]} (-> request :parameters :body)
+(defn check-credentials [request]
+    (let [db (:db request)
+          {:keys [username]} (-> request :parameters :body)
           [user] (users-model/get-user-by-username db username)]
       (response/ok
-        (assoc-in clean-profile [:user] user)))))
+        (assoc-in clean-profile [:user] user))))
