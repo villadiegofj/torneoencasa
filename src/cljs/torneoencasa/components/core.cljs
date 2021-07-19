@@ -17,3 +17,15 @@
                      :class (when (= active-page id) "active")
                      :on-click dispatch}
      name])
+
+(defn list-errors [errors]
+  [:ul.error-messages
+   (for [[k v] errors]
+     ^{:key k}
+     [:li v])])
+
+(defn modal [content button-label]
+  [:div.modal
+   [:div.modal-background
+   [:div.modal-content content ]
+   [:button.modal-close.is-large {:aria-label button-label}]]])

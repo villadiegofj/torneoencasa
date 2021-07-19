@@ -19,8 +19,7 @@
 
 (def error-schema
   [:map
-   [:error int?]
-   [:message string?]])
+   [:error-id keyword?]])
 
 (def api-routes
   [["/" {:name ::home
@@ -29,7 +28,7 @@
     ["/auth" {:name ::auth
               :post {:handler    auth/check-credentials
                      :parameters {:body auth/creds-schema}
-                     :responses  {200 {:body auth/profile-schema}
+                     :responses  {200 {:body users/user-schema}
                                   401 {:body error-schema}
                                   404 {:body error-schema}}}}]
     ["/users" {:name ::users

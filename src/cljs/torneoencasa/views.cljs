@@ -1,11 +1,13 @@
 (ns torneoencasa.views
   (:require
    [re-frame.core :as rf]
-   [torneoencasa.nav.subs :as nav-subs]
    [torneoencasa.auth.subs :as auth-subs]
-   [torneoencasa.auth.core :refer [sign-in sign-up]]
+   [torneoencasa.auth.core :refer [sign-in]]
+   [torneoencasa.components.core :refer [modal]]
+   [torneoencasa.home.core :refer [home]]
    [torneoencasa.nav.core :refer [nav]]
-   [torneoencasa.home.core :refer [home]]))
+   [torneoencasa.nav.subs :as nav-subs]
+   [torneoencasa.users.core :refer [sign-up]]))
 
 (defn pages [page-name]
   (case page-name
@@ -13,11 +15,6 @@
     :sign-in [sign-in]
     :sign-up [sign-up]
     [sign-in]))
-
-(defn errors-list [errors]
-  [:ul.error-messages
-   (for [[key [val]] errors]
-     ^{:key key} [:li (str (name key) " " val)])])
 
 (defn header []
   [:section.hero.is-info.is-bold.is-small
