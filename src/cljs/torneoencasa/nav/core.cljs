@@ -2,11 +2,12 @@
   (:require
     [re-frame.core :as rf]
     [torneoencasa.components.core :as c]
+    [torneoencasa.i18n :refer [app-tr]]
     [torneoencasa.nav.events :as nav-events]))
 
 (def nav-items
   [{:id :home
-    :name "Home"
+    :name (app-tr :home)
     :href "#home"
     :authorized #{:admin :participant :invited}
     :dispatch #(rf/dispatch [::nav-events/set-active-nav :home])}

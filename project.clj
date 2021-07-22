@@ -10,6 +10,7 @@
                  [com.cognitect/transit-clj "1.0.324"]
                  [com.github.seancorfield/next.jdbc "1.2.674"]
                  [com.h2database/h2 "1.4.200"]
+                 [com.taoensso/tempura "1.2.1"]
                  [day8.re-frame/http-fx "0.2.1"]
                  [day8.re-frame/tracing "0.6.0"]
                  [environ "1.2.0"]

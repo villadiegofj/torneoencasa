@@ -5,6 +5,7 @@
    [torneoencasa.auth.core :refer [sign-in]]
    [torneoencasa.components.core :refer [modal]]
    [torneoencasa.home.core :refer [home]]
+   [torneoencasa.i18n :refer [app-tr]]
    [torneoencasa.nav.core :refer [nav]]
    [torneoencasa.nav.subs :as nav-subs]
    [torneoencasa.users.core :refer [sign-up]]))
@@ -20,14 +21,14 @@
   [:section.hero.is-info.is-bold.is-small
    [:div.hero-body
     [:div.container
-     [:h1.title "Torneo en Casa"]
-     [:h2.subtitle "Todos somos una pieza, y en este rompecabezas todas las piezas son importantes"]]]])
+     [:h1.title (app-tr :app-title)]
+     [:h2.subtitle (app-tr :app-subtitle)]]]])
 
 (defn footer []
   [:footer
    [:div.container
     [:div.notification.has-text-centered
-    [:p [:a {:href "http://www.oraqus.cl"} "Made by Oraqus"]]]]])
+    [:p [:a {:href "http://www.oraqus.cl"} (app-tr :made-by)]]]]])
 
 (defn main-panel []
   (let [active-page (rf/subscribe [::nav-subs/active-page])
@@ -36,4 +37,4 @@
      [header]
      [nav @active-page @user]
      [pages @active-page]
-     #_[footer]]))
+     [footer]]))

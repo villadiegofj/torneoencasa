@@ -4,6 +4,7 @@
    [re-frame.core :as rf]
    [day8.re-frame.http-fx] ;; not used but causes :http-xhrio to self-register
    [ajax.core :as ajax]
+   [torneoencasa.i18n :refer [app-tr]]
    [torneoencasa.nav.events :as nav-events]))
 
 (def api-url "/api")
@@ -14,12 +15,12 @@
   (str/join "/" (concat [api-url] params))) 
 
 (defn lookup-error [code]
-  (let [m {:e401 "unauthorized access"
-           :e403 "you don't have access"
-           :e404 "resource not found"}
+  (let [m {:e401 (app-tr :errors/e401)
+           :e403 (app-tr :errors/e403)
+           :e404 (app-tr :errors/e404)}
         message (m code)]
     (if (nil? message)
-      "error found"
+      (app-tr :errors/error-found)
       message)))
 
 (rf/reg-event-db
