@@ -25,14 +25,23 @@
 
 (def ^:private initial-user-data
   "Seed the database with this data."
-  [{:id "ec3e9528-a0b8-4d6c-865a-44c9d376c001"
+  [{:id "ec3e9528-a0b8-4d6c-865a-44c9d376c000"
+    :firstname "Administrator"
+    :lastname "Administrator"
+    :email "admin@torneoencasa.com"
+    :code "ROOT"
+    :username "admin"
+    :password (buddy-hashers/encrypt "nimda")
+    :role "admin"
+    :created (t/instant)}
+   {:id "ec3e9528-a0b8-4d6c-865a-44c9d376c001"
     :firstname "Bruce"
     :lastname "Banner"
     :email "bruce@wayne.com"
     :code "GTHM"
     :username "batman"
     :password (buddy-hashers/encrypt "batman")
-    :role "admin"
+    :role "participant"
     :created (t/instant)}
    {:id "ec3e9528-a0b8-4d6c-865a-44c9d376c002"
     :firstname "Jack"
@@ -107,7 +116,7 @@
 (defn get-users
   "Return all available users."
   [db]
-  (sql/find-by-keys db :users :all))
+  (sql/find-by-keys db :users :all {:columns [:id :username :firstname :lastname :role :email :code :created]}))
 
 (defn get-user-by-id
   "Given a user id, return the user record."
