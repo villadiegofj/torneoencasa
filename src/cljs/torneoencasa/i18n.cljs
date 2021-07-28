@@ -7,6 +7,7 @@
   ; English language resources
   {:en {:app-subtitle "Todos somos una pieza, y en este rompecabezas todas las piezas son importantes"
         :app-title   "Torneo en Casa"
+        :download    "Download"
         :email       "E-mail"
         :errors {:error-found "error found"
                  :e401 "not authenticated"
@@ -33,6 +34,7 @@
    ; Spanish language resources
    :es {:app-subtitle "Todos somos una pieza, y en este rompecabezas todas las piezas son importantes"
         :app-title    "Torneo en Casa"
+        :download    "Descargar"
         :email        "Correo-e"
         :errors {:error-found "hubo un error"
                  :e401 "no autenticado"
