@@ -15,9 +15,9 @@
         {:keys [username password]} (-> request :parameters :body)
         record (users-model/get-user-by-username db username)]
     (if-not (seq record)
-      (response/not-found {:error-id   :e404})
+      (response/not-found {:error-id :e404})
       (let [[user] record
             authorized? (hashers/check password (:password user))]
         (if authorized?
-          (response/ok user)
+          (response/ok (dissoc user :password))
           (response/unauthorized {:error-id :e401}))))))
