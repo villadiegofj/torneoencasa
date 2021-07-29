@@ -10,7 +10,7 @@
 (def content-negotiation
   (m/create))
 
-#_(defn csv-output [data-seq]
+(defn piped-csv-output [data-seq]
   (let [headers     (map name (keys (first data-seq)))
         rows        (map vals data-seq)
         stream-csv  (fn [out] (csv/write-csv out (cons headers rows))
@@ -46,7 +46,7 @@
   (require '[torneoencasa.api.db.users :as tcdb])
   (require '[next.jdbc :as jdbc])
   (def ds (jdbc/with-options (jdbc/get-datasource db-spec) tcdb/ds-opts))
-  (def users (users-model/get-users ds))
+  (def users (tcdb/get-users ds))
   (count users)
   (create-representation users :json)
   (create-representation users :csv)
@@ -54,12 +54,7 @@
   result
   (println result)
   (csv-output users)
+  (piped-csv-output users)
 
-  (defn csxv-output [data-seq]
-    (let [headers     (map name (keys (first data-seq)))
-          rows        (map vals data-seq)
-          stream-csv  (fn [out] (csv/write-csv out (cons headers rows))
-                                (.flush out))]
-      (piped-input-stream #(stream-csv (io/make-writer % {})))))
 ,)
 
