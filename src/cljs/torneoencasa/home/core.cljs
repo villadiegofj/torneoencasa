@@ -1,6 +1,7 @@
 (ns torneoencasa.home.core
   (:require
    [re-frame.core :as rf]
+   [torneoencasa.users.events :as users-events]
    [torneoencasa.components.core :as c]
    [torneoencasa.i18n :refer [app-tr]]
    [torneoencasa.nav.subs :as nav-subs]
@@ -12,8 +13,8 @@
     [:div
      [:h1.has-text-centered (str (app-tr :welcome) " " user)]]
          [:div.field.is-grouped
-          [c/button (app-tr :download) {:on-click #(rf/dispatch [::auth-events/sign-in @values])}]]
-    ]])
+          [c/button (app-tr :download)
+           {:on-click #(rf/dispatch [::users-events/download-file])}]]]])
 
 (defn home []
   (let [user (rf/subscribe [::common-subs/user])
