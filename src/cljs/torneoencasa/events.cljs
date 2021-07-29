@@ -6,7 +6,7 @@
 
 (rf/reg-event-db
  ::initialize-db
- (fn [_ _]:w
+ (fn [_ _]
    users/default-db))
 
 (rf/reg-event-fx

@@ -1,4 +1,4 @@
-(ns torneoencasa.users
+(ns torneoencasa.users.events
   (:require
    [clojure.string :as str]
    [re-frame.core :as rf]
@@ -7,15 +7,6 @@
    [torneoencasa.i18n :refer [app-tr]]
    [torneoencasa.nav.events :as nav-events]))
 
-(defn lookup-error [code]
-  (let [m {:e401 (app-tr :errors/e401)
-           :e403 (app-tr :errors/e403)
-           :e404 (app-tr :errors/e404)}
-        message (m code)]
-    (if (nil? message)
-      (app-tr :errors/error-found)
-      message)))
-
 (rf/reg-event-fx
  ::download-file
  (fn [{:keys [db]} [_ _]]
@@ -23,11 +14,11 @@
     :http-xhrio {:method          :get
                  :uri             "/api/users/report"
                  :response-format {:description "file-download"
-                                   :content-type "*/*"
+                                   :content-type "text/csv"
                                    :type :blob
-                                   :read ajax.protocols(-body}
+                                   :read ajax.protocols/-body}
                  :on-success      [::download-file-ok]
-                 :on-failure      [::download-file-error]}})))
+                 :on-failure      [::download-file-error]}}))
 
 (defn download-file!
   [data content-type file-name]
@@ -40,14 +31,20 @@
     (js/document.body.removeChild link)))
 
 (rf/reg-event-fx
-  ::download-file-ok
+  ::download-file-ok-orig
   (fn [_ [_ result]]
     (download-file! result "text/csv" "users.csv")
     {}))
 
 (rf/reg-event-fx
+  ::download-file-ok
+  (fn [{:keys [db]} [_ result]]
+    (js/console.log "all good while retrieving file")
+    {:db (assoc db :download-file-result result)}))
+
+(rf/reg-event-fx
   ::download-file-error
-  (fn [_ [_ result]]
+  (fn [{:keys [db]} [_ result]]
     (js/console.log "error found while retrieving file")
-    {}))
+    {:db (assoc db :errors {:eXXX (str  "no pude conseguir el archivo" result)})}))
 
