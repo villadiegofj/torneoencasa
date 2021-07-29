@@ -10,6 +10,7 @@
             [reitit.coercion.malli :as rc-malli]
             [torneoencasa.api.controllers.auth :as auth]
             [torneoencasa.api.controllers.users :as users]
+            [torneoencasa.api.formats :as formats]
             [torneoencasa.api.middleware.core :as middleware])
  (:gen-class))
 
@@ -24,7 +25,7 @@
 (def api-routes
   [["/" {:name ::home
          :get  home-page}]
-   ["/api"
+   ["/api" ;;{:middleware [[middleware/wrap-enforce-roles]]}
     ["/auth" {:name ::auth
               :post {:handler    auth/check-credentials
                      :parameters {:body auth/creds-schema}
@@ -36,13 +37,15 @@
                       :responses {200 {:body users/users-schema}}}
                :post {:handler    users/add!
                       :parameters {:body users/user-schema}
-                      :responses  {201 {:body [:map [:id uuid?]]}}}}]]])
+                      :responses  {201 {:body [:map [:id uuid?]]}}}}]
+    ["/users/report" {:name ::users-report
+                      :get  {:handler users/report}}]]])
 
 (def accepted-origin #".*")
 
 (defn router-options [ds]
   {:data {:db ds
-          :muuntaja muuntaja/instance
+          :muuntaja formats/content-negotiation
           :coercion rc-malli/coercion
           :middleware [rrm-params/parameters-middleware
                        rrm-muuntaja/format-negotiate-middleware

@@ -3,7 +3,8 @@
     [buddy.hashers :as buddy-hashers]
     [java-time :as t]
     [ring.util.http-response :as response]
-    [torneoencasa.api.db.users :as users-model])
+    [torneoencasa.api.db.users :as users-model]
+    [torneoencasa.api.formats :as formats])
   (:import
     [java.util UUID])
   (:gen-class))
@@ -15,7 +16,6 @@
    [:email string?]
    [:code string?]
    [:username string?]
-   [:password string?]
    [:role string?]])
 
 (def users-schema
@@ -26,8 +26,8 @@
          [:email string?]
          [:code string?]
          [:username string?]
-         [:password string?]
-         [:role string?]]])
+         [:role string?]
+         [:created inst?]]])
 
 (def endpoint "/api/users/")
 
@@ -44,3 +44,13 @@
                    (assoc :id id :password encrypted :created (t/instant)))
           _ (users-model/save-user db user)]
       (response/created (str endpoint id) {:id id})))
+
+(defn report [request]
+  (let [response-format (formats/mime->keyword (get-in request [:headers "accept"] "text/plain"))
+        disposition     (str "attachment; filename=\"users." (name response-format) "\"")
+        users           (users-model/get-users (:db request))]
+    (-> (formats/create-representation users response-format)
+        (response/ok)
+        (merge {:headers {"Content-Type" (formats/content-type response-format)
+                          "Content-Disposition" disposition}}))))
+

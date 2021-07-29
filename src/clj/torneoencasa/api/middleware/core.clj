@@ -1,7 +1,5 @@
 (ns torneoencasa.api.middleware.core
   (:require
-    [torneoencasa.api.middleware.formats :as formats]
-    [muuntaja.middleware :as m]
     [ring.middleware.cors :as cors]
     [ring.middleware.webjars :as webjars]
     [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
@@ -26,3 +24,12 @@
               (fn [handler]
                 (fn [req]
                   (handler (assoc req :db (:datasource db))))))})
+
+;;(def wrap-enforce-roles
+;;  {:name ::enforce-roles
+;;   :compile (fn [{:keys [roles]} opts]
+;;              (let [authorized roles]
+;;                (if (seq roles)
+;;                  (fn [handler]
+;;                    (fn [req]
+;;                      (handler (assoc req :xxx (str "contents:" (keys req)))))))))})

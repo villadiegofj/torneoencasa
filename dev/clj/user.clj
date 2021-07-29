@@ -47,29 +47,19 @@
   (def ds (jdbc/with-options (jdbc/get-datasource db-spec) tcdb/ds-opts))
   (tcdb/get-users ds)
   (tcdb/get-user-by-username ds "barran")
-  (tcdb/get-user-by-username ds "batman")
-
-  (let [[user] tcdb/get-user-by-username ds "batman"]
-    (if user "found" "nope"))
+  (sql/find-by-keys ds :users {:username "batman"})
+  (sql/find-by-keys ds :users :all {:columns [:username :firstname :lastname :role :email :code :created]})
 
   (def h (tcr/handler {:datasource ds}))
-  (def auth {:uri            "/api/auth"
-             :request-method :post
-             :body-params    {:username "batman"
-                              :password "namtab"}})
-  (h auth)
-  (->> (h auth) muuntaja/decode-response-body)
+  (->> (h {:uri "/api/users"
+           :request-method :get})
+       muuntaja/decode-response-body)
 
-  (def ttt {:uri            "/api/auth"
-            :db             ds
-            :request-method :post
-            :parameters     {:body {:username "batman" :password "batmann"}}})
-
-  (auth/check-credentials ttt)
   (require '[malli.core :as malli])
   (malli/validate [:map [:message string?]] {:message "hello"})
 
-  (def match (r/match-by-path (api-router dbspec) "/api/auth"))
+  (def match (reitit/match-by-path
+               (tcr/api-router db-spec) "/api/users/report"))
 
   (rc/compile-request-coercers)
   (rc/coerce! match)
