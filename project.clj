@@ -26,6 +26,7 @@
                  [ring-cors "0.1.13"]
                  [ring-webjars "0.2.0"]
                  [thheller/shadow-cljs "2.11.8" :scope "provided"]
+                 [org.clojure/data.csv "1.0.0"]
                  [org.webjars.npm/bulma "0.9.1"]
                  [org.webjars/webjars-locator "0.40"]
                  [org.webjars.npm/material-icons "0.3.1"]]
@@ -69,4 +70,5 @@
                                       [integrant/repl "0.3.2"]]
                        :source-paths ["dev/clj" "dev/cljs"]
                        :resource-paths ["dev/resources"]}
-             :prod    {}})
+             :prod    {}}
+  :repl-options {:timeout 120000})
