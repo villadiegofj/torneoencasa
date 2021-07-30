@@ -18,8 +18,7 @@
     [next.jdbc :as jdbc]
     [next.jdbc.result-set :as rs]
     [next.jdbc.sql :as sql]
-    [torneoencasa.api.db.users :as tcdb]
-    [buddy.hashers :as buddy-hashers])
+    [torneoencasa.api.db.users :as tcdb])
 (:gen-class))
 
 (ig-repl/set-prep!

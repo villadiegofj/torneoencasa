@@ -1,11 +1,8 @@
 (ns torneoencasa.users.events
   (:require
-   [clojure.string :as str]
    [re-frame.core :as rf]
    [day8.re-frame.http-fx] ;; not used but causes :http-xhrio to self-register
-   [ajax.core :as ajax]
-   [torneoencasa.i18n :refer [app-tr]]
-   [torneoencasa.nav.events :as nav-events]))
+   [torneoencasa.i18n :refer [app-tr]]))
 
 (rf/reg-event-fx
  ::download-file
@@ -31,20 +28,13 @@
     (js/document.body.removeChild link)))
 
 (rf/reg-event-fx
-  ::download-file-ok-orig
+  ::download-file-ok
   (fn [_ [_ result]]
     (download-file! result "text/csv" "users.csv")
     {}))
 
 (rf/reg-event-fx
-  ::download-file-ok
-  (fn [{:keys [db]} [_ result]]
-    (js/console.log "all good while retrieving file")
-    {:db (assoc db :download-file-result result)}))
-
-(rf/reg-event-fx
   ::download-file-error
   (fn [{:keys [db]} [_ result]]
-    (js/console.log "error found while retrieving file")
-    {:db (assoc db :errors {:eXXX (str  "no pude conseguir el archivo" result)})}))
+    {:db (assoc db :errors {:eXXX (str "no pude conseguir el archivo: " result)})}))
 

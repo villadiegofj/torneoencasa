@@ -18,12 +18,14 @@
           [:div.message.is-danger
            [:div (c/list-errors @errors)]])
         [:div
-         [c/input-field (app-tr :username) "fa-user" {:type      "text"
-                                             :value     (:username @values)
-                                             :on-change #(swap! values assoc :username (.. % -target -value))}]
-         [c/input-field (app-tr :password) "fa-lock" {:type      "password"
-                                           :value     (:password @values)
-                                           :on-change #(swap! values assoc :password (.. % -target -value))}]
+         [c/input-field (app-tr :username) "fa-user"
+          {:type      "text"
+           :value     (:username @values)
+           :on-change #(swap! values assoc :username (.. % -target -value))}]
+         [c/input-field (app-tr :password) "fa-lock"
+          {:type      "password"
+           :value     (:password @values)
+           :on-change #(swap! values assoc :password (.. % -target -value))}]
          [:hr]
          [:div.field.is-grouped
           [c/button (app-tr :ok) {:on-click #(rf/dispatch [::auth-events/sign-in @values])}]]
