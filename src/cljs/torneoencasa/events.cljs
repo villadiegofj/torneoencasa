@@ -4,7 +4,7 @@
    [day8.re-frame.tracing :refer-macros [fn-traced]]
    [re-frame.core :as rf]))
 
-(def api-url "http://localhost:3000/api")
+(def api-url "/api")
 
 (defn endpoint
   "Concat any params to api-url separated by /"
