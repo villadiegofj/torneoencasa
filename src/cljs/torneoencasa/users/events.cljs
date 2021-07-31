@@ -2,6 +2,7 @@
   (:require
    [re-frame.core :as rf]
    [day8.re-frame.http-fx] ;; not used but causes :http-xhrio to self-register
+   [torneoencasa.events :as events]
    [torneoencasa.i18n :refer [app-tr]]))
 
 (rf/reg-event-fx
@@ -9,7 +10,7 @@
  (fn [{:keys [db]} [_ _]]
    {:db (-> db (update-in [:errors] dissoc :message))
     :http-xhrio {:method          :get
-                 :uri             "/api/users/report"
+                 :uri             (events/endpoint "users/report")
                  :response-format {:description "file-download"
                                    :content-type "text/csv"
                                    :type :blob

@@ -7,20 +7,6 @@
     [torneoencasa.i18n :refer [app-tr]]
     [torneoencasa.subs :as common-subs]))
 
-(def default-db
-  {:auth false
-   :errors nil
-   :nav {:active-page :sign-in}
-   :user {:id ""
-          :firstname ""
-          :lastname ""
-          :email ""
-          :code ""
-          :username ""
-          :password ""
-          :roles #{:visitor}}
-   :items #{}})
-
 (defn sign-up []
   (let [initial-values {:firstname "" :lastname "" :email "" :code ""
                         :username "" :password "" :roles #{:participant}}

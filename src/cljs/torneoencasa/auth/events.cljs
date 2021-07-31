@@ -1,18 +1,11 @@
 (ns torneoencasa.auth.events
   (:require
-   [clojure.string :as str]
    [re-frame.core :as rf]
    [day8.re-frame.http-fx] ;; not used but causes :http-xhrio to self-register
    [ajax.core :as ajax]
+   [torneoencasa.events :as events]
    [torneoencasa.i18n :refer [app-tr]]
    [torneoencasa.nav.events :as nav-events]))
-
-(def api-url "/api")
-
-(defn endpoint
-  "Concat any params to api-url separated by /"
-  [& params]
-  (str/join "/" (concat [api-url] params))) 
 
 (defn lookup-error [code]
   (let [m {:e401 (app-tr :errors/e401)
@@ -37,7 +30,7 @@
  (fn [{:keys [db]} [_ {:keys [username password]}]]
    {:db (-> db (update-in [:errors] dissoc :message))
     :http-xhrio {:method          :post
-                 :uri             (endpoint "auth")
+                 :uri             (events/endpoint "auth")
                  :params          {:username username
                                    :password password}
                  :format          (ajax/json-request-format)
@@ -61,7 +54,7 @@
              (assoc-in [:nav :active-page] :sign-in)
              (assoc-in [:errors] nil))
      :http-xhrio {:method          :post
-                  :uri             (endpoint "users")
+                  :uri             (events/endpoint "users")
                   :params          user
                   :format          (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})

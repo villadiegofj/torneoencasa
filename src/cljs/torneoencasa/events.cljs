@@ -1,13 +1,34 @@
 (ns torneoencasa.events
   (:require
+   [clojure.string :as str]
    [day8.re-frame.tracing :refer-macros [fn-traced]]
-   [re-frame.core :as rf]
-   [torneoencasa.users.core :as users]))
+   [re-frame.core :as rf]))
+
+(def api-url "http://localhost:3000/api")
+
+(defn endpoint
+  "Concat any params to api-url separated by /"
+  [& params]
+  (str/join "/" (concat [api-url] params)))
+
+(def default-db
+  {:auth false
+   :errors nil
+   :nav {:active-page :sign-in}
+   :user {:id ""
+          :firstname ""
+          :lastname ""
+          :email ""
+          :code ""
+          :username ""
+          :password ""
+          :roles #{:visitor}}
+   :items #{}})
 
 (rf/reg-event-db
  ::initialize-db
  (fn [_ _]
-   users/default-db))
+   default-db))
 
 (rf/reg-event-fx
  ::printlog

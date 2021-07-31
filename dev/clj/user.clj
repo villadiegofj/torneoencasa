@@ -13,6 +13,8 @@
     [reitit.ring.middleware.muuntaja :as rrmm]
     [reitit.ring.middleware.parameters :as rrmp]
     [reitit.coercion.malli :as rcm]
+    [shadow.cljs.devtools.server :as shadow-server]
+    [shadow.cljs.devtools.api :as shadow]
     [torneoencasa.api.routes :as tcr]
     [torneoencasa.api.controllers.auth :as auth]
     [next.jdbc :as jdbc]
@@ -41,6 +43,20 @@
   (halt)
   (reset)
 
+  ;;;;;;;;;;;;;;;;
+  (shadow-server/start!)
+  (shadow/watch :torneoencasa)
+  (shadow/compile :torneoencasa)
+  (shadow/release :torneoencasa)
+  (shadow/browser-repl)
+  (shadow/node-repl)
+  ;; shadow-cljs cljs-repl foo
+  (shadow/repl :torneoencasa)
+  ;; Once you are in a CLJS REPL you can use
+  :repl/quit
+  ;; or
+  :cljs/quit
+  (shadow-server/stop!)
   ;;;;;;;;;;;;;;;;
   (def db-spec {:dbtype "h2:mem" :dbname "torneoencasa"})
   (def ds (jdbc/with-options (jdbc/get-datasource db-spec) tcdb/ds-opts))

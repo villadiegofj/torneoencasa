@@ -15,11 +15,13 @@
                  :e404 "not found"}
         :firstname   "First Name"
         :home        "Home"
+        :information "Information"
         :language    "Language"
         :lastname    "Last Name"
         :made-by     "Made by Oraqus"
         :messages    {:no-account? "No account?"
-                      :sign-up! "Sign up!"}
+                      :sign-up! "Sign up!"
+                      :download-file-here "You can download the file here"}
         :na          "NA"
         :name        "Name"
         :ok          "Ok"
@@ -42,11 +44,13 @@
                  :e404 "no encontrado"}
         :firstname   "Nombre"
         :home        "Inicio"
+        :information "Información"
         :language    "Language"
         :lastname    "Apellido"
         :made-by     "Hecho por Oraqus"
         :messages    {:no-account? "¿No tienes cuenta?"
-                      :sign-up! "Inscríbete!"}
+                      :sign-up! "Inscríbete!"
+                      :download-file-here "Puedes bajar el archivo aquí"}
         :na          "ND"
         :name        "Nombre"
         :ok          "Ok"
