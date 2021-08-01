@@ -2,7 +2,7 @@
   (:require
    [reagent.dom :as rdom]
    [re-frame.core :as rf]
-   [torneoencasa.events :as events]
+   [torneoencasa.subsevents :as common-se]
    [torneoencasa.views :as views]
    [torneoencasa.config :as config]))
 
@@ -17,6 +17,6 @@
     (rdom/render [views/main-panel] root-el)))
 
 (defn init []
-  (rf/dispatch-sync [::events/initialize-db])
+  (rf/dispatch-sync [::common-se/initialize-db])
   (dev-setup)
   (mount-root))

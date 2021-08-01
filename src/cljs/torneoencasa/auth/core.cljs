@@ -2,11 +2,11 @@
   (:require
     [reagent.core :as r]
     [re-frame.core :as rf]
-    [torneoencasa.auth.events :as auth-events]
+    [torneoencasa.auth.subsevents :as auth-se]
     [torneoencasa.components.core :as c]
+    [torneoencasa.subsevents :as common-se]
     [torneoencasa.i18n :refer [app-tr]]
-    [torneoencasa.nav.events :as nav-events]
-    [torneoencasa.subs :as common-subs]))
+    [torneoencasa.nav.subsevents :as nav-se]))
 
 (defn sign-in []
   (let [initial-values {:username "" :password ""}
@@ -14,7 +14,7 @@
     (fn []
       [:div.columns
        [:div.column.is-one-third.is-offset-one-third
-        (if-let [errors (rf/subscribe [::common-subs/errors])]
+        (if-let [errors (rf/subscribe [::common-se/errors])]
           [:div.message.is-danger
            [:div (c/list-errors @errors)]])
         [:div
@@ -28,8 +28,9 @@
            :on-change #(swap! values assoc :password (.. % -target -value))}]
          [:hr]
          [:div.field.is-grouped
-          [c/button (app-tr :ok) {:on-click #(rf/dispatch [::auth-events/sign-in @values])}]]
+          [c/button (app-tr :ok) {:on-click #(rf/dispatch [::auth-se/sign-in @values])}]]
          [:div
           [:hr]
           [:p.has-text-centered (str (app-tr :messages/no-account?) " ")
-           [:a {:on-click #(rf/dispatch [::nav-events/set-active-nav :sign-up])} (app-tr :messages/sign-up!)]]]]]])))
+           [:a {:on-click #(rf/dispatch [::nav-se/set-active-nav :sign-up])}
+            (app-tr :messages/sign-up!)]]]]]])))

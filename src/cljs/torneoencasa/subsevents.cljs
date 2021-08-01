@@ -1,4 +1,4 @@
-(ns torneoencasa.events
+(ns torneoencasa.subsevents
   (:require
    [clojure.string :as str]
    [day8.re-frame.tracing :refer-macros [fn-traced]]
@@ -25,6 +25,7 @@
           :roles #{:visitor}}
    :items #{}})
 
+;; events
 (rf/reg-event-db
  ::initialize-db
  (fn [_ _]
@@ -32,6 +33,18 @@
 
 (rf/reg-event-fx
  ::printlog
- (fn [coeffects event]
+ (fn [coeffects _]
    (let [db (:db coeffects)]
      {:db db})))
+
+;; subscriptions
+(rf/reg-sub
+  ::user
+  (fn [db _]
+    (:user db)))
+
+(rf/reg-sub
+  ::errors
+  (fn [db _]
+    (:errors db)))
+
