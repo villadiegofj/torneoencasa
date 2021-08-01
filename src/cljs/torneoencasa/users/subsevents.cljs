@@ -3,6 +3,7 @@
     [ajax.core :as ajax]
     [day8.re-frame.http-fx]                                 ;; not used but causes :http-xhrio to self-register
     [re-frame.core :as rf]
+    [torneoencasa.errors :refer [lookup-error]]
     [torneoencasa.nav.subsevents :as nav-se]
     [torneoencasa.subsevents :as common-se]
     [torneoencasa.i18n :refer [app-tr]]))
@@ -63,5 +64,5 @@
 (rf/reg-event-fx
   ::download-file-error
   (fn [{:keys [db]} [_ result]]
-    {:db (assoc db :errors {:eXXX (str "no pude conseguir el archivo: " result)})}))
+    {:db (assoc db :errors :e900 (lookup-error :e900))}))
 

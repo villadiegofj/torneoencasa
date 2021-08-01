@@ -31,12 +31,6 @@
  (fn [_ _]
    default-db))
 
-(rf/reg-event-fx
- ::printlog
- (fn [coeffects _]
-   (let [db (:db coeffects)]
-     {:db db})))
-
 ;; subscriptions
 (rf/reg-sub
   ::user

@@ -12,7 +12,8 @@
         :errors           {:error-found "hubo un error"
                            :e401        "no autenticado"
                            :e403        "no autorizado"
-                           :e404        "no encontrado"}
+                           :e404        "no encontrado"
+                           :e900        "Hubo un problema al tratar de descargar el archivo"}
         :firstname        "Nombre"
         :home             "Inicio"
         :information      "Información"
@@ -41,7 +42,8 @@
         :errors           {:error-found "error found"
                            :e401        "not authenticated"
                            :e403        "not authorized"
-                           :e404        "not found"}
+                           :e404        "not found"
+                           :e900        "Something failed while trying to download the file"}
         :firstname        "First Name"
         :home             "Home"
         :information      "Information"

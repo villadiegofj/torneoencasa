@@ -3,18 +3,10 @@
     [ajax.core :as ajax]
     [day8.re-frame.http-fx] ;; not used but causes :http-xhrio to self-register
     [re-frame.core :as rf]
+    [torneoencasa.errors :refer [lookup-error]]
     [torneoencasa.subsevents :as events]
     [torneoencasa.i18n :refer [app-tr]]
     [torneoencasa.nav.subsevents :as nav-events]))
-
-(defn lookup-error [code]
-  (let [m {:e401 (app-tr :errors/e401)
-           :e403 (app-tr :errors/e403)
-           :e404 (app-tr :errors/e404)}
-        message (m code)]
-    (if (nil? message)
-      (app-tr :errors/error-found)
-      message)))
 
 ;; events
 (rf/reg-event-db
