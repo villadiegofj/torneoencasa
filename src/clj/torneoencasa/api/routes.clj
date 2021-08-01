@@ -1,7 +1,5 @@
 (ns torneoencasa.api.routes
   (:require [ring.util.http-response :as response]
-            [muuntaja.core :as muuntaja]
-            [reitit.coercion :as rc]
             [reitit.dev.pretty]
             [reitit.ring :as rr]
             [reitit.ring.coercion :as rrc]
@@ -29,7 +27,7 @@
     ["/auth" {:name ::auth
               :post {:handler    auth/check-credentials
                      :parameters {:body auth/creds-schema}
-                     :responses  {200 {:body users/user-schema}
+                     :responses  {200 {:body auth/user-schema}
                                   401 {:body error-schema}
                                   404 {:body error-schema}}}}]
     ["/users" {:name ::users
@@ -67,7 +65,6 @@
   (rr/ring-handler
     (api-router ds)
     (rr/routes (rr/create-resource-handler {:path "/"})
-               (middleware/wrap-with-webjars "/webjars")
                (rr/redirect-trailing-slash-handler {:method :strip})
                (rr/create-default-handler
                  {:not-found (constantly {:status 404 :body {:error 404 :message "resource not found"}})}))))

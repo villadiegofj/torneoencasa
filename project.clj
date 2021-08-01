@@ -5,6 +5,7 @@
                                r
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
+                 [org.clojure/data.csv "1.0.0"]
                  [buddy "2.0.0"]
                  [clojure.java-time "0.3.2"]
                  [com.cognitect/transit-clj "1.0.324"]
@@ -24,12 +25,7 @@
                  [ring/ring-jetty-adapter "1.9.3"]
                  [ring/ring-defaults "0.2.1"]
                  [ring-cors "0.1.13"]
-                 [ring-webjars "0.2.0"]
-                 [thheller/shadow-cljs "2.11.8" :scope "provided"]
-                 [org.clojure/data.csv "1.0.0"]
-                 [org.webjars.npm/bulma "0.9.1"]
-                 [org.webjars/webjars-locator "0.40"]
-                 [org.webjars.npm/material-icons "0.3.1"]]
+                 [thheller/shadow-cljs "2.11.8" :scope "provided"]]
 
   :min-lein-version "2.9.0"
   :plugins [[lein-shadow "0.2.0"]]
@@ -40,21 +36,21 @@
   :aot [torneoencasa.api.app]
   :shadow-cljs {:nrepl  {:port 8777}
                 :builds {:torneoencasa {:target     :browser
-                                    :output-dir "resources/public/js"
-                                    :asset-path "/js"
-                                    :modules    {:main {:init-fn  torneoencasa.core/init
-                                                        :preloads [devtools.preload
-                                                                   day8.re-frame-10x.preload]}}
-                                    :dev        {:compiler-options
-                                                  {:closure-defines {re-frame.trace.trace-enabled? true
-                                                                     day8.re-frame.tracing.trace-enabled? true}}}
-                                    :release    {:build-options
-                                                 {:ns-aliases
-                                                  {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
-                                    :devtools   {:http-root "resources/public"
-                                                 :http-port 8280}}}}
+                                        :output-dir "resources/public/js"
+                                        :asset-path "/js"
+                                        :modules    {:main {:init-fn  torneoencasa.core/init
+                                                            :preloads [devtools.preload
+                                                                       day8.re-frame-10x.preload]}}
+                                        :dev        {:compiler-options
+                                                     {:closure-defines {re-frame.trace.trace-enabled?        true
+                                                                        day8.re-frame.tracing.trace-enabled? true}}}
+                                        :release    {:build-options
+                                                     {:ns-aliases
+                                                      {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
+                                        :devtools   {:http-root "resources/public"
+                                                     :http-port 8280}}}}
   :npm-deps [[react "16.13.0"]
-             [react-dom "16.13.0"] ]
+             [react-dom "16.13.0"]]
   :npm-dev-deps [[xmlhttprequest "1.8.0"]]
   :prep-tasks []
   :profiles {:uberjar {:source-paths   ["src/clj" "src/cljs"]

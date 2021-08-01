@@ -9,7 +9,7 @@
 
 (defn sign-up []
   (let [initial-values {:firstname "" :lastname "" :email "" :code ""
-                        :username "" :password "" :roles #{:participant}}
+                        :username "" :password "" :role "participant"}
         values (r/atom initial-values)]
     (fn []
       [:div.columns

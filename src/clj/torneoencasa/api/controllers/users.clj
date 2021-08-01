@@ -16,6 +16,7 @@
    [:email string?]
    [:code string?]
    [:username string?]
+   [:password string?]
    [:role string?]])
 
 (def users-schema

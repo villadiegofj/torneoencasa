@@ -1,7 +1,6 @@
 (ns torneoencasa.api.middleware.core
   (:require
     [ring.middleware.cors :as cors]
-    [ring.middleware.webjars :as webjars]
     [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 
 (defn wrap-with-cors
@@ -11,12 +10,6 @@
              :access-control-allow-credentials "true"
              :access-control-allow-headers #{:accept :content-type}
              :access-control-allow-methods #{:get :put :post :delete}))
-
-(defn wrap-with-webjars
-  ([handler]
-   (wrap-with-webjars handler "/webjars"))
-  ([handler prefix]
-   (webjars/wrap-webjars handler prefix)))
 
 (def wrap-db
   {:name ::db

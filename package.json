@@ -2,6 +2,7 @@
     "name": "torneoencasa",
     "version": "1.0.0",
     "dependencies": {
+        "bulma": "0.9.3",
         "highlight.js": "9.18.1",
         "react": "16.13.0",
         "react-dom": "16.13.0",
