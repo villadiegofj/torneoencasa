@@ -24,7 +24,7 @@
                   :format          (ajax/json-request-format)
                   :response-format (ajax/json-response-format {:keywords? true})
                   :on-success      [::api-sign-up-success]
-                  :on-failure      [::api-request-error :sign-up]}}))
+                  :on-failure      [::common-se/api-request-error :sign-up]}}))
 
 (rf/reg-event-fx
   ::api-sign-up-success

@@ -2,7 +2,8 @@
   (:require
    [clojure.string :as str]
    [day8.re-frame.tracing :refer-macros [fn-traced]]
-   [re-frame.core :as rf]))
+   [re-frame.core :as rf]
+   [torneoencasa.errors :refer [lookup-error]]))
 
 (def api-url "/api")
 
@@ -30,6 +31,15 @@
  ::initialize-db
  (fn [_ _]
    default-db))
+
+(rf/reg-event-db
+  ::api-request-error
+  (fn [db [_ result]]
+    (let [code (-> result
+                   :response
+                   :error-id
+                   (keyword))]
+      (assoc db :errors {code (lookup-error code)}))))
 
 ;; subscriptions
 (rf/reg-sub
