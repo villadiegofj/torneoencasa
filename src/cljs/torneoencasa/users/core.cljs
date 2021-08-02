@@ -18,31 +18,45 @@
          (if-let [errors (rf/subscribe [::common-se/errors])]
            [:div.message.is-danger (:message @errors)])]
         [:div
-         [c/input-field (app-tr :name) "fa-user"
-          {:type      "text"
-           :value     (:firstname @values)
-           :on-change #(swap! values assoc :firstname (.. % -target -value))}]
-         [c/input-field (app-tr :lastname) "fa-user"
-          {:type      "text"
-           :value     (:lastname @values)
-           :on-change #(swap! values assoc :lastname (.. % -target -value))}]
-         [c/input-field (app-tr :email) "fa-envelope"
-          {:type      "text"
-           :value     (:email @values)
-           :on-change #(swap! values assoc :email (.. % -target -value))}]
-         [c/input-field (app-tr :optional-code) "fa-lock"
-          {:type      "text"
-           :value     (:code @values)
-           :on-change #(swap! values assoc :code (.. % -target -value))}]
+         [c/field
+          {:id :firstname
+           :label (app-tr :name)
+           :type      "text"
+           :icon-class "fa-user"
+           :values values}]
+         [c/field
+          {:id :lastname
+           :label (app-tr :lastname)
+           :type      "text"
+           :icon-class "fa-user"
+           :values values}]
+         [c/field
+          {:id :email
+           :label (app-tr :email)
+           :type      "text"
+           :icon-class "fa-envelope"
+           :values values}]
+         [c/field
+          {:id :code
+           :label (app-tr :optional-code)
+           :type      "text"
+           :icon-class "fa-lock"
+           :values values}]
          [:hr]
-         [c/input-field (app-tr :username) "fa-user"
-          {:type      "text"
-           :value     (:username @values)
-           :on-change #(swap! values assoc :username (.. % -target -value))}]
-         [c/input-field (app-tr :password) "fa-lock"
-          {:type      "password"
-           :value     (:password @values)
-           :on-change #(swap! values assoc :password (.. % -target -value))}]
+         [c/field
+          {:id :username
+           :label (app-tr :username)
+           :type      "text"
+           :icon-class "fa-user"
+           :values values}]
+         [c/field
+          {:id :password
+           :label (app-tr :password)
+           :type      "password"
+           :icon-class "fa-lock"
+           :values values}]
          [:hr]
          [:div.field.is-grouped
-          [c/button (app-tr :signup) {:on-click #(rf/dispatch [::users-se/sign-up @values])}]]]]])))
+          [c/button {:label (app-tr :signup)
+                     :css-classes "is-fullwidth"
+                     :on-click #(rf/dispatch [::users-se/sign-up @values])}]]]]])))

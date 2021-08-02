@@ -1,10 +1,10 @@
 (ns torneoencasa.home.core
   (:require
-   [re-frame.core :as rf]
-   [torneoencasa.users.subsevents :as users-se]
-   [torneoencasa.components.core :as c]
-   [torneoencasa.i18n :refer [app-tr]]
-   [torneoencasa.subsevents :as common-se]))
+    [re-frame.core :as rf]
+    [torneoencasa.components.core :as c]
+    [torneoencasa.i18n :refer [app-tr]]
+    [torneoencasa.subsevents :as common-se]
+    [torneoencasa.users.subsevents :as users-se]))
 
 (defn main [user]
   [:div.columns
@@ -18,8 +18,9 @@
       [:span (app-tr :information)]]
      [:p (app-tr :messages/download-file-here)]
      [:div.field.is-grouped
-      [c/button (app-tr :download)
-       {:on-click #(rf/dispatch [::users-se/download-file])}]]]]])
+      [c/button
+       {:label    (app-tr :download)
+        :on-click #(rf/dispatch [::users-se/download-file])}]]]]])
 
 (defn home []
   (let [user (rf/subscribe [::common-se/user])]
