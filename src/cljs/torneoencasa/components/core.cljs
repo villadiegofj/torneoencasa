@@ -20,12 +20,11 @@
      [:p.help help-text])])
 
 (defn button [{:keys [label on-click css-classes]
-               :or {label (app-tr :ok) on-click "" css-classes ""}}]
-  [:div.control
-   [:button.button.is-link.is-small
-    {:class    css-classes
-     :on-click on-click}
-    label]])
+               :or   {label (app-tr :ok) on-click "" css-classes ""}}]
+  [:button.button.is-link.is-small
+   {:class    css-classes
+    :on-click on-click}
+   label])
 
 (defn nav-item
   [{:keys [id href name dispatch]} active-page]

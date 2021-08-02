@@ -33,7 +33,7 @@
          [c/field
           {:id :email
            :label (app-tr :email)
-           :type      "text"
+           :type      "email"
            :icon-class "fa-envelope"
            :values values}]
          [c/field
