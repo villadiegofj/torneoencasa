@@ -5,7 +5,8 @@
 (defn link [{:keys [text on-click]}]
   [:a {:on-click on-click} text])
 
-(defn field [{:keys [id label type icon-class values]}]
+(defn field [{:keys [id label type icon-class help-text values]
+              :or {id "" label "" type "text" icon-class "" help-text "" values nil}}]
   [:div.field
    [:label.label (str label ":")
     [:div.control.has-icons-left
@@ -14,7 +15,9 @@
                     :value (id @values)
                     :on-change #(swap! values assoc id (.. % -target -value))}]
      [:span.icon.is-small.is-left
-      [:i.fas {:class icon-class}]]]]])
+      [:i.fas {:class icon-class}]]]]
+   (when help-text
+     [:p.help help-text])])
 
 (defn button [{:keys [label on-click css-classes]
                :or {label (app-tr :ok) on-click "" css-classes ""}}]
