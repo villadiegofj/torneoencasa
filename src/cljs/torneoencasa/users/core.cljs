@@ -22,13 +22,13 @@
           {:id :firstname
            :label (app-tr :name)
            :type      "text"
-           :icon-class "fa-user"
+           :icon-class "fa-id-card"
            :values values}]
          [c/field
           {:id :lastname
            :label (app-tr :lastname)
            :type      "text"
-           :icon-class "fa-user"
+           :icon-class "fa-signature"
            :values values}]
          [c/field
           {:id :email
@@ -38,9 +38,10 @@
            :values values}]
          [c/field
           {:id :code
-           :label (app-tr :optional-code)
+           :label (app-tr :pass-code)
            :type      "text"
-           :icon-class "fa-lock"
+           :icon-class "fa-ticket-alt"
+           :help-text (app-tr :optional)
            :values values}]
          [:hr]
          [c/field
