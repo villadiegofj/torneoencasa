@@ -5,20 +5,6 @@
     [torneoencasa.api.db.users :as users-model])
   (:gen-class))
 
-(def user-schema
-  [:map
-   [:firstname string?]
-   [:lastname string?]
-   [:email string?]
-   [:code string?]
-   [:username string?]
-   [:role string?]])
-
-(def creds-schema
-  [:map
-   [:username string?]
-   [:password string?]])
-
 (defn check-credentials [request]
   (let [db (:db request)
         {:keys [username password]} (-> request :parameters :body)

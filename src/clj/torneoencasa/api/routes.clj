@@ -1,24 +1,21 @@
 (ns torneoencasa.api.routes
   (:require [ring.util.http-response :as response]
-            [reitit.dev.pretty]
-            [reitit.ring :as rr]
-            [reitit.ring.coercion :as rrc]
-            [reitit.ring.middleware.muuntaja :as rrm-muuntaja]
-            [reitit.ring.middleware.parameters :as rrm-params]
-            [reitit.coercion.malli :as rc-malli]
+            [reitit.dev.pretty :as dev]
+            [reitit.ring :as ring]
+            [reitit.ring.coercion :as coercion]
+            [reitit.ring.middleware.muuntaja :as muuntaja]
+            [reitit.ring.middleware.parameters :as params]
+            [reitit.coercion.malli :as malli]
             [torneoencasa.api.controllers.auth :as auth]
             [torneoencasa.api.controllers.users :as users]
             [torneoencasa.api.formats :as formats]
-            [torneoencasa.api.middleware.core :as middleware])
+            [torneoencasa.api.middleware.core :as middleware]
+            [torneoencasa.api.schemas :as schema])
  (:gen-class))
 
 (defn home-page [_]
   (-> (response/resource-response "index.html" {:root "public"})
       (response/content-type "text/html")))
-
-(def error-schema
-  [:map
-   [:error-id keyword?]])
 
 (def api-routes
   [["/" {:name ::home
@@ -26,15 +23,15 @@
    ["/api" ;;{:middleware [[middleware/wrap-enforce-roles]]}
     ["/auth" {:name ::auth
               :post {:handler    auth/check-credentials
-                     :parameters {:body auth/creds-schema}
-                     :responses  {200 {:body auth/user-schema}
-                                  401 {:body error-schema}
-                                  404 {:body error-schema}}}}]
+                     :parameters {:body schema/creds}
+                     :responses  {200 {:body schema/user}
+                                  401 {:body schema/error}
+                                  404 {:body schema/error}}}}]
     ["/users" {:name ::users
                :get  {:handler   users/fetch-all
-                      :responses {200 {:body users/users-schema}}}
+                      :responses {200 {:body schema/users}}}
                :post {:handler    users/add!
-                      :parameters {:body users/user-schema}
+                      :parameters {:body schema/user}
                       :responses  {201 {:body [:map [:id uuid?]]}}}}]
     ["/users/report" {:name ::users-report
                       :get  {:handler users/report}}]]])
@@ -44,27 +41,29 @@
 (defn router-options [ds]
   {:data {:db ds
           :muuntaja formats/content-negotiation
-          :coercion rc-malli/coercion
-          :middleware [rrm-params/parameters-middleware
-                       rrm-muuntaja/format-negotiate-middleware
-                       rrm-muuntaja/format-response-middleware
-                       rrm-muuntaja/format-request-middleware
+          :coercion malli/coercion
+          :middleware [params/parameters-middleware
+                       muuntaja/format-negotiate-middleware
+                       muuntaja/format-response-middleware
+                       muuntaja/format-request-middleware
                        [middleware/wrap-with-cors accepted-origin]
-                       rrc/coerce-request-middleware
-                       rrc/coerce-exceptions-middleware
-                       rrc/coerce-response-middleware
+                       coercion/coerce-request-middleware
+                       coercion/coerce-exceptions-middleware
+                       coercion/coerce-response-middleware
                        middleware/wrap-db]}
-   :exception reitit.dev.pretty/exception})
+   :exception dev/exception})
 
 (defn api-router [ds]
-  (rr/router
+  (ring/router
     api-routes (router-options ds)))
 
 (defn handler
   [ds]
-  (rr/ring-handler
+  (ring/ring-handler
     (api-router ds)
-    (rr/routes (rr/create-resource-handler {:path "/"})
-               (rr/redirect-trailing-slash-handler {:method :strip})
-               (rr/create-default-handler
-                 {:not-found (constantly {:status 404 :body {:error 404 :message "resource not found"}})}))))
+    (ring/routes (ring/create-resource-handler {:path "/"})
+                 (ring/redirect-trailing-slash-handler {:method :strip})
+                 (ring/create-default-handler
+                   {:not-found          (constantly {:status 404 :body {:error 404 :message "resource not found"}})
+                    :method-not-allowed (constantly {:status 405 :body {:error 405 :message "method not allowed"}})
+                    :not-acceptable     (constantly {:status 406 :body {:error 406 :message "not acceptable"}})}))))

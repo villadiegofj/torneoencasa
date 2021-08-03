@@ -40,21 +40,3 @@
 (defn mime->keyword [mime]
   (when mime
     (-> mime keyword name keyword)))
-
-(comment
-  (def db-spec {:dbtype "h2:mem" :dbname "torneoencasa"})
-  (require '[torneoencasa.api.db.users :as tcdb])
-  (require '[next.jdbc :as jdbc])
-  (def ds (jdbc/with-options (jdbc/get-datasource db-spec) tcdb/ds-opts))
-  (def users (tcdb/get-users ds))
-  (count users)
-  (create-representation users :json)
-  (create-representation users :csv)
-  (def result (create-representation users :csv))
-  result
-  (println result)
-  (csv-output users)
-  (piped-csv-output users)
-
-,)
-

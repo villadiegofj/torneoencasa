@@ -9,27 +9,6 @@
     [java.util UUID])
   (:gen-class))
 
-(def user-schema
-  [:map
-   [:firstname string?]
-   [:lastname string?]
-   [:email string?]
-   [:code string?]
-   [:username string?]
-   [:password string?]
-   [:role string?]])
-
-(def users-schema
-  [:set [:map
-         [:id uuid?]
-         [:firstname string?]
-         [:lastname string?]
-         [:email string?]
-         [:code string?]
-         [:username string?]
-         [:role string?]
-         [:created inst?]]])
-
 (def endpoint "/api/users/")
 
 (defn fetch-all [request]
