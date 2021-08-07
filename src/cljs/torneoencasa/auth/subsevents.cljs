@@ -5,7 +5,8 @@
     [re-frame.core :as rf]
     [torneoencasa.subsevents :as common-se]
     [torneoencasa.i18n :refer [app-tr]]
-    [torneoencasa.nav.subsevents :as nav-se]))
+    [torneoencasa.nav.subsevents :as nav-se]
+    [torneoencasa.users.subsevents :as users-se]))
 
 ;; events
 (rf/reg-event-fx
@@ -25,7 +26,8 @@
   ::api-sign-in-success
   (fn [_ [_ result]]
     {:db         result
-     :dispatch-n [[::nav-se/set-active-nav :home]]}))
+     :dispatch-n [[::users-se/set-user result]
+                  [::nav-se/set-active-nav :home]]}))
 
 ;; subscriptions
 (rf/reg-sub

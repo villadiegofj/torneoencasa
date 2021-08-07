@@ -9,6 +9,11 @@
     [torneoencasa.i18n :refer [app-tr]]))
 
 ;; events
+(rf/reg-event-db
+  ::set-user
+  (fn [db [_ data]]
+    (assoc db :user data)))
+
 (rf/reg-event-fx
   ::sign-up
   ;;[cofx event]
@@ -65,4 +70,5 @@
   ::download-file-error
   (fn [{:keys [db]} [_ result]]
     {:db (assoc db :errors :e900 (lookup-error :e900))}))
+
 

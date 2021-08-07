@@ -6,11 +6,11 @@
     [torneoencasa.subsevents :as common-se]
     [torneoencasa.users.subsevents :as users-se]))
 
-(defn main [user]
+(defn- main [user]
   [:div.columns
    [:div.column.is-half.is-offset-one-quarter
     [:div
-     [:h1.has-text-centered (str (app-tr :welcome) " " user)]]
+     [:h1.has-text-centered (str (app-tr :welcome) " " (:firstname user))]]
     [:div.box
      [:div.icon-text
       [:span.icon.has-text-info
