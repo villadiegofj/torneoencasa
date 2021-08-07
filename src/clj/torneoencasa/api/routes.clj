@@ -17,28 +17,31 @@
   (-> (response/resource-response "index.html" {:root "public"})
       (response/content-type "text/html")))
 
-(def api-routes
+(def all-routes
   [["/" {:name ::home
          :get  home-page}]
-   ["/api" ;;{:middleware [[middleware/wrap-enforce-roles]]}
+   ["/api"
     ["/auth" {:name ::auth
               :post {:handler    auth/check-credentials
                      :parameters {:body schema/creds}
                      :responses  {200 {:body schema/user}
                                   401 {:body schema/error}
                                   404 {:body schema/error}}}}]
-    ["/users" {:name ::users
-               :get  {:handler   users/fetch-all
-                      :responses {200 {:body schema/users}}}
-               :post {:handler    users/add!
-                      :parameters {:body schema/user}
-                      :responses  {201 {:body [:map [:id uuid?]]}}}}]
-    ["/users/report" {:name ::users-report
-                      :get  {:handler users/report}}]]])
+    ["/users" {:middleware [[middleware/wrap-enforce-roles]]}
+     ["" {:name ::users
+          :get  {:handler   users/fetch-all
+                 :responses {200 {:body schema/users}}}
+          :post {:handler    users/add!
+                 :parameters {:body schema/user}
+                 :responses  {201 {:body [:map [:id uuid?]]}}}}]
+     ["/report" {:name  ::users-report
+                 :allowed #{:admin}
+                 :get   {:handler users/report}}]]]])
 
 (def accepted-origin #".*")
 
 (defn router-options [ds]
+  "router options affecting all routes"
   {:data {:db ds
           :muuntaja formats/content-negotiation
           :coercion malli/coercion
@@ -53,14 +56,14 @@
                        middleware/wrap-db]}
    :exception dev/exception})
 
-(defn api-router [ds]
+(defn app-router [ds]
   (ring/router
-    api-routes (router-options ds)))
+    all-routes (router-options ds)))
 
 (defn handler
   [ds]
   (ring/ring-handler
-    (api-router ds)
+    (app-router ds)
     (ring/routes (ring/create-resource-handler {:path "/"})
                  (ring/redirect-trailing-slash-handler {:method :strip})
                  (ring/create-default-handler

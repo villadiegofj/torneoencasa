@@ -11,8 +11,8 @@
         :email            "Correo-e"
         :errors           {:error-found "hubo un error"
                            :e401        "no autenticado"
-                           :e403        "no autorizado"
-                           :e404        "no encontrado"
+                           :e403        "acceso no autorizado"
+                           :e404        "recurso no encontrado"
                            :e900        "Hubo un problema al tratar de descargar el archivo"}
         :firstname        "Nombre"
         :home             "Inicio"
@@ -42,8 +42,8 @@
         :email            "E-mail"
         :errors           {:error-found "error found"
                            :e401        "not authenticated"
-                           :e403        "not authorized"
-                           :e404        "not found"
+                           :e403        "access not authorized"
+                           :e404        "resource not found"
                            :e900        "Something failed while trying to download the file"}
         :firstname        "First Name"
         :home             "Home"

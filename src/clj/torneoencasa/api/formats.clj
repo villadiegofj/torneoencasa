@@ -29,13 +29,15 @@
   "Returns a representation of the data based on the response format"
   [data response-format]
   (case response-format
-    :json  (into #{} data)
-    :csv   (csv-output data)))
+    :csv   (csv-output data)
+    :plain data
+    :json  (into #{} data)))
 
 (defn content-type [k]
   (case k
-    :json "application/json"
-    :csv  "text/csv"))
+    :csv  "text/csv"
+    :plain "text/plain"
+    :json "application/json"))
 
 (defn mime->keyword [mime]
   (when mime

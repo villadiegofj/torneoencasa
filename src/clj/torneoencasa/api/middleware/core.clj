@@ -1,7 +1,9 @@
 (ns torneoencasa.api.middleware.core
   (:require
+    [clojure.set :as set]
     [ring.middleware.cors :as cors]
-    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
+    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
+    [ring.util.http-response :as response]))
 
 (defn wrap-with-cors
   [handler domain-pattern]
@@ -18,11 +20,12 @@
                 (fn [req]
                   (handler (assoc req :db (:datasource db))))))})
 
-;;(def wrap-enforce-roles
-;;  {:name ::enforce-roles
-;;   :compile (fn [{:keys [roles]} opts]
-;;              (let [authorized roles]
-;;                (if (seq roles)
-;;                  (fn [handler]
-;;                    (fn [req]
-;;                      (handler (assoc req :xxx (str "contents:" (keys req)))))))))})
+(def wrap-enforce-roles
+  {:name    ::enforce-roles
+   :compile (fn [{:keys [allowed]} _]
+              (if (seq allowed)
+                (fn [handler]
+                  (fn [req]
+                    (if (set/subset? allowed (:roles req))
+                      (handler req)
+                      (response/forbidden {:error-id :e403}))))))})

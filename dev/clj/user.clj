@@ -65,10 +65,18 @@
   (sql/find-by-keys ds :users {:username "batman"})
   (sql/find-by-keys ds :users :all {:columns [:username :firstname :lastname :role :email :code :created]})
 
-  (def h (tcr/handler {:datasource ds}))
+  (def h (tcr/handler {:datasource (jdbc/with-options
+                                     (jdbc/get-datasource
+                                       {:dbtype "h2:mem" :dbname "torneoencasa"}) tcdb/ds-opts)}))
   (->> (h {:uri "/api/users"
            :request-method :get})
        muuntaja/decode-response-body)
+
+  (->> (h {:uri "/api/users/report"
+           ;:headers {"accept" "application/json"}
+           :headers {"accept" "text/csv"}
+           :roles #{:admin}
+           :request-method :get}) )
 
   (require '[malli.core :as malli])
   (malli/validate [:map [:message string?]] {:message "hello"})
