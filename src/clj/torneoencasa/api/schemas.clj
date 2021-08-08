@@ -17,7 +17,7 @@
    [:code string?]
    [:username string?]
    [:password {:optional true} string?]
-   [:role string?]])
+   [:roles string?]])
 
 (def users
   [:set [:map
@@ -27,5 +27,5 @@
          [:email string?]
          [:code string?]
          [:username string?]
-         [:role string?]
+         [:roles string?]
          [:created inst?]]])

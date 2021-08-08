@@ -32,7 +32,7 @@
     :code "ROOT"
     :username "admin"
     :password (buddy-hashers/encrypt "nimda")
-    :role "admin"
+    :roles "admin"
     :created (t/instant)}
    {:id "ec3e9528-a0b8-4d6c-865a-44c9d376c001"
     :firstname "Bruce"
@@ -41,7 +41,7 @@
     :code "GTHM"
     :username "batman"
     :password (buddy-hashers/encrypt "batman")
-    :role "participant"
+    :roles "participant"
     :created (t/instant)}
    {:id "ec3e9528-a0b8-4d6c-865a-44c9d376c002"
     :firstname "Jack"
@@ -50,7 +50,7 @@
     :code "JKR"
     :username "joker"
     :password (buddy-hashers/encrypt "joker")
-    :role "participant"
+    :roles "participant"
     :created (t/instant)}
    {:id "ec3e9528-a0b8-4d6c-865a-44c9d376c003"
     :firstname "Oscar"
@@ -59,7 +59,7 @@
     :code ""
     :username "penguin"
     :password (buddy-hashers/encrypt "penguin")
-    :role "invited"
+    :roles "invited"
     :created (t/instant)}])
 
 (defn populate
@@ -93,7 +93,7 @@
                                      email        varchar(64),
                                      password     varchar(128),
                                      code         varchar(32),
-                                     role         varchar(32),
+                                     roles        varchar(32),
                                      created      timestamp)")])
       (println "Created users tables!")
       ;; if table creation was successful, it didn't exist before
@@ -116,7 +116,7 @@
 (defn get-users
   "Return all available users."
   [db]
-  (sql/find-by-keys db :users :all {:columns [:id :username :firstname :lastname :role :email :code :created]}))
+  (sql/find-by-keys db :users :all {:columns [:id :username :firstname :lastname :roles :email :code :created]}))
 
 (defn get-user-by-id
   "Given a user id, return the user record."

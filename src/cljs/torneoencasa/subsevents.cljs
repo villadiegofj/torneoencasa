@@ -23,10 +23,13 @@
           :code ""
           :username ""
           :password ""
-          :roles #{:visitor}}
+          :roles "visitor"}
    :items #{}})
 
+;;;;;;;;;;;;;;;;;;;;;;;;
 ;; events
+;;;;;;;;;;;;;;;;;;;;;;;;
+
 (rf/reg-event-db
  ::initialize-db
  (fn [_ _]
@@ -41,11 +44,9 @@
                    (keyword))]
       (assoc db :errors {code (lookup-error code)}))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscriptions
-(rf/reg-sub
-  ::user
-  (fn [db _]
-    (:user db)))
+;;;;;;;;;;;;;;;;;;;;;;;;
 
 (rf/reg-sub
   ::errors
