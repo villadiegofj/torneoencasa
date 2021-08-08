@@ -8,7 +8,10 @@
     [torneoencasa.nav.subsevents :as nav-se]
     [torneoencasa.users.subsevents :as users-se]))
 
+;;;;;;;;;;;;;;;;;;;;;;;;
 ;; events
+;;;;;;;;;;;;;;;;;;;;;;;;
+
 (rf/reg-event-fx
  ::sign-in
  (fn [{:keys [db]} [_ {:keys [username password]}]]
@@ -24,12 +27,15 @@
 
 (rf/reg-event-fx
   ::api-sign-in-success
-  (fn [_ [_ result]]
-    {:db         result
+  (fn [{:keys [db]} [_ result]]
+    {:db         (assoc db :auth true)
      :dispatch-n [[::users-se/set-user result]
                   [::nav-se/set-active-nav :home]]}))
 
+;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscriptions
+;;;;;;;;;;;;;;;;;;;;;;;;
+
 (rf/reg-sub
   ::current-user
   (fn [db _]

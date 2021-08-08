@@ -3,7 +3,6 @@
     [re-frame.core :as rf]
     [torneoencasa.components.core :as c]
     [torneoencasa.i18n :refer [app-tr]]
-    [torneoencasa.subsevents :as common-se]
     [torneoencasa.users.subsevents :as users-se]))
 
 (defn- main [user]
@@ -23,7 +22,7 @@
         :on-click #(rf/dispatch [::users-se/download-file])}]]]]])
 
 (defn home []
-  (let [user (rf/subscribe [::common-se/user])]
+  (let [user (rf/subscribe [::users-se/current-user])]
     [:div.columns
      [:div.column.is-two-third
       [main @user]]]))

@@ -4,9 +4,9 @@
     [re-frame.core :as rf]
     [torneoencasa.auth.subsevents :as auth-se]
     [torneoencasa.components.core :as c]
-    [torneoencasa.subsevents :as common-se]
     [torneoencasa.i18n :refer [app-tr]]
-    [torneoencasa.nav.subsevents :as nav-se]))
+    [torneoencasa.nav.subsevents :as nav-se]
+    [torneoencasa.subsevents :as common-se]))
 
 (defn sign-in []
   (let [initial-values {:username "" :password ""}

@@ -8,7 +8,20 @@
     [torneoencasa.subsevents :as common-se]
     [torneoencasa.i18n :refer [app-tr]]))
 
+(defn download-file!
+  [data content-type file-name]
+  (let [data-blob (js/Blob. #js [data] #js {:type content-type})
+        link (js/document.createElement "a")]
+    (set! (.-href link) (js/URL.createObjectURL data-blob))
+    (.setAttribute link "download" file-name)
+    (js/document.body.appendChild link)
+    (.click link)
+    (js/document.body.removeChild link)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;
 ;; events
+;;;;;;;;;;;;;;;;;;;;;;;;
+
 (rf/reg-event-db
   ::set-user
   (fn [db [_ data]]
@@ -33,8 +46,8 @@
 
 (rf/reg-event-fx
   ::api-sign-up-success
-  (fn [{:keys [db]} [_ result]]
-    {:db         result
+  (fn [{:keys [db]} [_ _]]
+    {:db         db
      :dispatch-n [[::nav-se/set-active-nav :sign-in]]}))
 
 (rf/reg-event-fx
@@ -50,25 +63,22 @@
                   :on-success      [::download-file-ok]
                   :on-failure      [::download-file-error]}}))
 
-(defn download-file!
-  [data content-type file-name]
-  (let [data-blob (js/Blob. #js [data] #js {:type content-type})
-        link (js/document.createElement "a")]
-    (set! (.-href link) (js/URL.createObjectURL data-blob))
-    (.setAttribute link "download" file-name)
-    (js/document.body.appendChild link)
-    (.click link)
-    (js/document.body.removeChild link)))
-
 (rf/reg-event-fx
   ::download-file-ok
   (fn [_ [_ result]]
     (download-file! result "text/csv" "users.csv")
     {}))
 
-(rf/reg-event-fx
+(rf/reg-event-db
   ::download-file-error
-  (fn [{:keys [db]} [_ result]]
-    {:db (assoc db :errors :e900 (lookup-error :e900))}))
+  (fn [db [_ result]]
+    (assoc db :errors :e900 (str (lookup-error :e900) ": " (:last-error result)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; subscriptions
+;;;;;;;;;;;;;;;;;;;;;;;;
 
+(rf/reg-sub
+  ::current-user
+  (fn [db _]
+    (:user db)))
