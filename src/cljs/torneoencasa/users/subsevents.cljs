@@ -1,14 +1,14 @@
 (ns torneoencasa.users.subsevents
   (:require
     [ajax.core :as ajax]
-    [day8.re-frame.http-fx]                                 ;; not used but causes :http-xhrio to self-register
+    [day8.re-frame.http-fx] ;; not used but causes :http-xhrio to self-register
     [re-frame.core :as rf]
-    [torneoencasa.errors :refer [lookup-error]]
+    [torneoencasa.errors :refer [lookup-error-message]]
     [torneoencasa.nav.subsevents :as nav-se]
     [torneoencasa.subsevents :as common-se]
     [torneoencasa.i18n :refer [app-tr]]))
 
-(defn download-file!
+(defn- download-file!
   [data content-type file-name]
   (let [data-blob (js/Blob. #js [data] #js {:type content-type})
         link (js/document.createElement "a")]
@@ -56,23 +56,19 @@
     {:db         (-> db (update-in [:errors] dissoc :message))
      :http-xhrio {:method          :get
                   :uri             (common-se/endpoint "users/report")
+                  :params          {:roles (-> db :user :roles (keyword) (vector))}
                   :response-format {:description  "file-download"
                                     :content-type "text/csv"
                                     :type         :blob
                                     :read         ajax.protocols/-body}
                   :on-success      [::download-file-ok]
-                  :on-failure      [::download-file-error]}}))
+                  :on-failure      [::common-se/api-request-error]}}))
 
 (rf/reg-event-fx
   ::download-file-ok
   (fn [_ [_ result]]
     (download-file! result "text/csv" "users.csv")
     {}))
-
-(rf/reg-event-db
-  ::download-file-error
-  (fn [db [_ result]]
-    (assoc db :errors :e900 (str (lookup-error :e900) ": " (:last-error result)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscriptions

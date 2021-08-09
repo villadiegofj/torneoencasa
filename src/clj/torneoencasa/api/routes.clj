@@ -36,7 +36,8 @@
                  :responses  {201 {:body [:map [:id uuid?]]}}}}]
      ["/report" {:name  ::users-report
                  :allowed #{:admin}
-                 :get   {:handler users/report}}]]]])
+                 :get   {:handler users/report
+                         :responses {403 {:body schema/error}}}}]]]])
 
 (def accepted-origin #".*")
 

@@ -75,7 +75,7 @@
   (->> (h {:uri "/api/users/report"
            ;:headers {"accept" "application/json"}
            :headers {"accept" "text/csv"}
-           :roles #{:admin}
+           :roles "admin"
            :request-method :get}) )
 
   (require '[malli.core :as malli])

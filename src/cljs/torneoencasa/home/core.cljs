@@ -3,11 +3,15 @@
     [re-frame.core :as rf]
     [torneoencasa.components.core :as c]
     [torneoencasa.i18n :refer [app-tr]]
+    [torneoencasa.subsevents :as common-se]
     [torneoencasa.users.subsevents :as users-se]))
 
 (defn- main [user]
   [:div.columns
    [:div.column.is-half.is-offset-one-quarter
+    (if-let [errors (rf/subscribe [::common-se/errors])]
+      [:div.message.is-danger
+       [:div (c/list-errors @errors)]])
     [:div
      [:h1.has-text-centered (str (app-tr :welcome) " " (:firstname user))]]
     [:div.box

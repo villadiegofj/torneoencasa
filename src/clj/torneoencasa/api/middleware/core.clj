@@ -1,5 +1,6 @@
 (ns torneoencasa.api.middleware.core
   (:require
+    [clojure.pprint :as pp]
     [clojure.set :as set]
     [ring.middleware.cors :as cors]
     [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
@@ -26,6 +27,8 @@
               (if (seq allowed)
                 (fn [handler]
                   (fn [req]
-                    (if (set/subset? allowed (:roles req))
-                      (handler req)
-                      (response/forbidden {:error-id :e403}))))))})
+                    (let [xs (get-in req [:params "roles"] "invalid")
+                          roles (-> xs (keyword) (hash-set))]
+                      (if (set/subset? allowed roles)
+                        (handler req)
+                        (response/forbidden {:error-id :e403})))))))})

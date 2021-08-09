@@ -1,9 +1,9 @@
 (ns torneoencasa.subsevents
   (:require
-   [clojure.string :as str]
-   [day8.re-frame.tracing :refer-macros [fn-traced]]
-   [re-frame.core :as rf]
-   [torneoencasa.errors :refer [lookup-error]]))
+    [clojure.string :as str]
+    [day8.re-frame.tracing :refer-macros [fn-traced]]
+    [re-frame.core :as rf]
+    [torneoencasa.errors :refer [lookup-error-message]]))
 
 (def api-url "/api")
 
@@ -41,8 +41,9 @@
     (let [code (-> result
                    :response
                    :error-id
-                   (keyword))]
-      (assoc db :errors {code (lookup-error code)}))))
+                   (keyword))
+          error-id (if (seq code) code :error-found)]
+      (assoc db :errors {error-id (lookup-error-message error-id)}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; subscriptions
