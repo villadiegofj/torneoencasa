@@ -2,7 +2,6 @@
   (:require
     [re-frame.core :as rf]
     [torneoencasa.auth.core :refer [sign-in]]
-    [torneoencasa.components.core :refer [modal]]
     [torneoencasa.home.core :refer [home]]
     [torneoencasa.i18n :refer [app-tr]]
     [torneoencasa.nav.core :refer [nav]]
@@ -26,9 +25,8 @@
 
 (defn footer []
   [:footer
-   [:div.container
     [:div.notification.has-text-centered
-    [:p [:a {:href "http://www.oraqus.cl"} (app-tr :made-by)]]]]])
+     [:p [:a {:href "http://www.oraqus.cl"} (app-tr :made-by)]]]])
 
 (defn main-panel []
   (let [active-page (rf/subscribe [::nav-se/active-page])

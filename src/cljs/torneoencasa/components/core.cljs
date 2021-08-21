@@ -27,10 +27,10 @@
    label])
 
 (defn nav-item
-  [{:keys [id href name dispatch]} active-page]
+  [{:keys [id href name on-click]} active-page]
     [:a.navbar-item {:href href
                      :class (when (= active-page id) "active")
-                     :on-click dispatch}
+                     :on-click on-click}
      name])
 
 (defn list-errors [errors]
@@ -39,11 +39,11 @@
      ^{:key k}
      [:li v])])
 
-(defn modal [content button-label]
-  [:div.modal
-   [:div.modal-background
-   [:div.modal-content content ]
-   [:button.modal-close.is-large {:aria-label button-label}]]])
+(defn errors [errors]
+  (fn []
+    (if-let [errors errors]
+      [:div.message.is-danger
+       [:div (list-errors @errors)]])))
 
 (defn banner [{:keys [title subtitle url]
                :or {title "" subtitle "" url "#"}}]
@@ -65,10 +65,51 @@
      [:div.icon.is-small.is-left
       [:i.fas {:class icon-class}]]]]])
 
-(defn tiled-category [{:keys [label url color]
+(defn tabs [ts]
+  [:div.tabs.is-centered
+   [:ul
+    (for [{:keys [label icon-class on-click]} ts]
+      [:li [:a {:on-click on-click}
+             [:span.icon.is-small [:i.fas {:class icon-class}]]
+             [:span label]]])]])
+
+#_(defn modal [content button-label]
+    [:div.modal
+     [:div.modal-background
+      [:div.modal-content content ]
+      [:button.modal-close.is-large {:aria-label button-label}]]])
+
+#_(defn tiled-category [{:keys [label url color]
                        :or   {label (app-tr :na) url "#" color ""}}]
   [:div.tile.is-child
    [:a {:href url}
     [:article {:class (str "message" " " color)}
      [:div.message-body
       [:p.title.is-4 label]]]]])
+
+#_(defn cards []
+  [:div.tile.is-parent
+   [:div.tile.is-child.card
+    [:div.card-image
+     [:figure.image.is-4by3
+      [:img
+       {:alt "Placeholder image",
+        :src "https://via.placeholder.com/192x96"}]]]
+    [:div.card-content
+     [:div.content "Subir archivos"
+      [:time {:datetime "2016-1-1"} "11:09 PM - 1 Jan 2016"]]]]] )
+
+#_(defn tiled [tiles]
+    [:div.tile.is-ancestor
+      (for [{:keys [title img on-click]} tiles]
+        [:div.tile.is-parent
+         [:div.tile.is-child.box [:p.title title]
+          [:figure.image.is-4by3
+            [:img {:src img}]]]])])
+
+#_(defn menu []
+  [:aside.menu
+   [:p.menu-label "General"]
+   [:ul.menu-list
+    [:li [:a "Dashboard"]]
+    [:li [:a.is-active "Customers"]]]])

@@ -40,3 +40,4 @@
           [:p.has-text-centered (str (app-tr :messages/no-account?) " ")
            [c/link {:text     (app-tr :messages/sign-up!)
                     :on-click #(rf/dispatch [::nav-se/set-active-nav :sign-up])}]]]]]])))
+
